@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: learnflow-config
+  namespace: learnflow
+data:
+  NODE_ENV: "production"
+  NEXT_PUBLIC_APP_URL: "https://learnflow.ai"
+  AI_MODEL_PRIMARY: "claude-sonnet-4-20250514"
+  AI_MODEL_FALLBACK: "gpt-4o"
+  ENABLE_GAMIFICATION: "true"
+  ENABLE_AI_PROCTORING: "false"
+  MAX_AI_REQUESTS_PER_MINUTE: "30"
