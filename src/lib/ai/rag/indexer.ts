@@ -34,22 +34,22 @@ export async function indexCourse(courseId: string) {
   }
 
   // Index each module and lesson
-  for (const module of course.modules || []) {
-    if (module.description) {
+  for (const courseModule of course.modules || []) {
+    if (courseModule.description) {
       const result = await ragPipeline.indexContent(
-        `module-${module.id}`,
-        module.description,
+        `module-${courseModule.id}`,
+        courseModule.description,
         {
           courseId: course.id,
-          moduleId: module.id,
+          moduleId: courseModule.id,
           type: 'module',
-          title: module.name,
+          title: courseModule.name,
         }
       );
       totalIndexed += result.indexed;
     }
 
-    for (const lesson of module.lessons || []) {
+    for (const lesson of courseModule.lessons || []) {
       const content = lesson.contentJson as { text?: string } | null;
       if (content?.text) {
         const result = await ragPipeline.indexContent(
@@ -57,7 +57,7 @@ export async function indexCourse(courseId: string) {
           content.text,
           {
             courseId: course.id,
-            moduleId: module.id,
+            moduleId: courseModule.id,
             lessonId: lesson.id,
             type: 'lesson',
             title: lesson.name,
