@@ -3,3 +3,5 @@ export * from './organizations';
 export * from './content';
 export * from './progress';
 export * from './gamification';
+export * from './certifications';
+export * from './ai';
