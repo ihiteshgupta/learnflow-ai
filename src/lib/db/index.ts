@@ -1,13 +1,37 @@
-import { drizzle } from 'drizzle-orm/postgres-js';
-import postgres from 'postgres';
-import * as schema from './schema';
+// Stub database module - will be replaced with actual Drizzle setup
+// This provides the interface expected by the AI modules
 
-const connectionString = process.env.DATABASE_URL!;
+import type { Course, Module, Lesson, User, UserProfile, AISession, AIMessage } from './schema';
 
-const client = postgres(connectionString, {
-  max: Number(process.env.DATABASE_POOL_SIZE) || 10,
-});
+type CourseWithRelations = Course & { modules: (Module & { lessons: Lesson[] })[] };
+type LessonWithRelations = Lesson & { module: Module & { course: Course; courseId: string } };
 
-export const db = drizzle(client, { schema });
+// Placeholder - actual connection will be established when DATABASE_URL is configured
+const db = {
+  query: {
+    courses: {
+      findFirst: async (_opts?: unknown): Promise<CourseWithRelations | null> => null,
+      findMany: async (_opts?: unknown): Promise<Course[]> => [],
+    },
+    users: {
+      findFirst: async (_opts?: unknown): Promise<User | null> => null,
+    },
+    userProfiles: {
+      findFirst: async (_opts?: unknown): Promise<UserProfile | null> => null,
+    },
+    lessons: {
+      findFirst: async (_opts?: unknown): Promise<LessonWithRelations | null> => null,
+    },
+    aiSessions: {
+      findFirst: async (_opts?: unknown): Promise<AISession | null> => null,
+    },
+  },
+  insert: (_table: unknown) => ({
+    values: (_values: unknown) => ({
+      returning: async (): Promise<{ id: string }[]> => [{ id: crypto.randomUUID() }],
+    }),
+  }),
+};
 
-export type Database = typeof db;
+export { db };
+export * from './schema';

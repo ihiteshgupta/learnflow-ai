@@ -1,40 +1,25 @@
 import { z } from 'zod';
 
 const envSchema = z.object({
-  // App
-  NODE_ENV: z.enum(['development', 'staging', 'production']).default('development'),
-  NEXT_PUBLIC_APP_URL: z.string().url().default('http://localhost:3000'),
-
-  // Database
-  DATABASE_URL: z.string().url(),
-  DATABASE_POOL_SIZE: z.coerce.number().default(10),
-
-  // Redis
-  REDIS_URL: z.string().url(),
-
-  // AI
-  ANTHROPIC_API_KEY: z.string(),
-  OPENAI_API_KEY: z.string().optional(),
+  // AI Model Configuration
   AI_MODEL_PRIMARY: z.string().default('claude-sonnet-4-20250514'),
   AI_MODEL_FALLBACK: z.string().default('gpt-4o'),
+  ANTHROPIC_API_KEY: z.string().optional(),
+  OPENAI_API_KEY: z.string().optional(),
+  MAX_AI_REQUESTS_PER_MINUTE: z.coerce.number().default(60),
 
-  // Vector DB
-  QDRANT_URL: z.string().url(),
+  // Qdrant Configuration
+  QDRANT_URL: z.string().default('http://localhost:6333'),
   QDRANT_API_KEY: z.string().optional(),
 
-  // Auth
-  NEXTAUTH_SECRET: z.string(),
-  NEXTAUTH_URL: z.string().url().default('http://localhost:3000'),
+  // Database
+  DATABASE_URL: z.string().optional(),
 
-  // Feature flags
-  ENABLE_GAMIFICATION: z.coerce.boolean().default(true),
-  ENABLE_AI_PROCTORING: z.coerce.boolean().default(false),
-  MAX_AI_REQUESTS_PER_MINUTE: z.coerce.number().default(30),
+  // App
+  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
 });
 
-export type Env = z.infer<typeof envSchema>;
-
-function getEnv(): Env {
+function getEnv() {
   const parsed = envSchema.safeParse(process.env);
 
   if (!parsed.success) {
@@ -46,3 +31,5 @@ function getEnv(): Env {
 }
 
 export const env = getEnv();
+
+export type Env = z.infer<typeof envSchema>;
