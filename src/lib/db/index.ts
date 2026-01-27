@@ -1,37 +1,52 @@
-// Stub database module - will be replaced with actual Drizzle setup
-// This provides the interface expected by the AI modules
+import { drizzle } from 'drizzle-orm/postgres-js';
+import postgres from 'postgres';
+import * as schema from './schema/index';
 
-import type { Course, Module, Lesson, User, UserProfile, AISession, AIMessage } from './schema';
+// Check if DATABASE_URL is configured
+const connectionString = process.env.DATABASE_URL;
 
-type CourseWithRelations = Course & { modules: (Module & { lessons: Lesson[] })[] };
-type LessonWithRelations = Lesson & { module: Module & { course: Course; courseId: string } };
-
-// Placeholder - actual connection will be established when DATABASE_URL is configured
-const db = {
+// Create a mock db for development without database
+const createMockDb = () => ({
   query: {
-    courses: {
-      findFirst: async (_opts?: unknown): Promise<CourseWithRelations | null> => null,
-      findMany: async (_opts?: unknown): Promise<Course[]> => [],
-    },
-    users: {
-      findFirst: async (_opts?: unknown): Promise<User | null> => null,
-    },
-    userProfiles: {
-      findFirst: async (_opts?: unknown): Promise<UserProfile | null> => null,
-    },
-    lessons: {
-      findFirst: async (_opts?: unknown): Promise<LessonWithRelations | null> => null,
-    },
-    aiSessions: {
-      findFirst: async (_opts?: unknown): Promise<AISession | null> => null,
-    },
+    users: { findFirst: async () => null, findMany: async () => [] },
+    userProfiles: { findFirst: async () => null, findMany: async () => [] },
+    domains: { findFirst: async () => null, findMany: async () => [] },
+    tracks: { findFirst: async () => null, findMany: async () => [] },
+    courses: { findFirst: async () => null, findMany: async () => [] },
+    modules: { findFirst: async () => null, findMany: async () => [] },
+    lessons: { findFirst: async () => null, findMany: async () => [] },
+    enrollments: { findFirst: async () => null, findMany: async () => [] },
+    progress: { findFirst: async () => null, findMany: async () => [] },
+    achievements: { findFirst: async () => null, findMany: async () => [] },
+    userAchievements: { findFirst: async () => null, findMany: async () => [] },
+    xpTransactions: { findFirst: async () => null, findMany: async () => [] },
+    streakHistory: { findFirst: async () => null, findMany: async () => [] },
+    certifications: { findFirst: async () => null, findMany: async () => [] },
+    assessments: { findFirst: async () => null, findMany: async () => [] },
+    aiSessions: { findFirst: async () => null, findMany: async () => [] },
+    aiMessages: { findFirst: async () => null, findMany: async () => [] },
   },
-  insert: (_table: unknown) => ({
-    values: (_values: unknown) => ({
-      returning: async (): Promise<{ id: string }[]> => [{ id: crypto.randomUUID() }],
-    }),
-  }),
-};
+  insert: () => ({ values: () => ({ returning: async () => [], onConflictDoUpdate: () => ({ returning: async () => [] }) }) }),
+  update: () => ({ set: () => ({ where: () => ({ returning: async () => [] }) }) }),
+  delete: () => ({ where: async () => {} }),
+  execute: async () => [{}],
+  select: () => ({ from: () => ({ orderBy: () => ({ limit: async () => [] }) }) }),
+});
+
+let db: ReturnType<typeof drizzle> | ReturnType<typeof createMockDb>;
+
+if (connectionString) {
+  const client = postgres(connectionString, {
+    max: Number(process.env.DATABASE_POOL_SIZE) || 10,
+  });
+  db = drizzle(client, { schema });
+} else {
+  console.warn('DATABASE_URL not configured - using mock database');
+  db = createMockDb() as any;
+}
 
 export { db };
-export * from './schema';
+export type Database = typeof db;
+
+// Re-export all schema types
+export * from './schema/index';
