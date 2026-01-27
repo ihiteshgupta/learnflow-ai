@@ -1,0 +1,126 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnflow-web
+  namespace: learnflow
+  labels:
+    app: learnflow-web
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: learnflow-web
+  template:
+    metadata:
+      labels:
+        app: learnflow-web
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+        prometheus.io/path: "/api/metrics"
+    spec:
+      containers:
+        - name: web
+          image: learnflow/web:latest
+          ports:
+            - containerPort: 3000
+              name: http
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "200m"
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+          envFrom:
+            - configMapRef:
+                name: learnflow-config
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: learnflow-secrets
+                  key: database-url
+            - name: REDIS_URL
+              valueFrom:
+                secretKeyRef:
+                  name: learnflow-secrets
+                  key: redis-url
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnflow-secrets
+                  key: anthropic-api-key
+            - name: NEXTAUTH_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: learnflow-secrets
+                  key: nextauth-secret
+          livenessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          readinessProbe:
+            httpGet:
+              path: /api/health
+              port: 3000
+            initialDelaySeconds: 5
+            periodSeconds: 5
+            timeoutSeconds: 3
+            failureThreshold: 3
+      imagePullSecrets:
+        - name: registry-credentials
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: learnflow-ai
+  namespace: learnflow
+  labels:
+    app: learnflow-ai
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: learnflow-ai
+  template:
+    metadata:
+      labels:
+        app: learnflow-ai
+    spec:
+      containers:
+        - name: ai-service
+          image: learnflow/ai-service:latest
+          ports:
+            - containerPort: 5000
+              name: http
+          resources:
+            requests:
+              memory: "1Gi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "2000m"
+          envFrom:
+            - configMapRef:
+                name: learnflow-config
+          env:
+            - name: ANTHROPIC_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnflow-secrets
+                  key: anthropic-api-key
+            - name: OPENAI_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: learnflow-secrets
+                  key: openai-api-key
+            - name: QDRANT_URL
+              valueFrom:
+                secretKeyRef:
+                  name: learnflow-secrets
+                  key: qdrant-url
