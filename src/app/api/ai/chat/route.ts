@@ -1,6 +1,7 @@
 import { HumanMessage, AIMessage } from '@langchain/core/messages';
 import { chat } from '@/lib/ai/orchestrator';
 import { db } from '@/lib/db';
+import { auth } from '@/lib/auth';
 import type { TeachingMode } from '@/lib/ai/types';
 
 export const runtime = 'nodejs';
@@ -8,8 +9,9 @@ export const maxDuration = 60;
 
 export async function POST(req: Request) {
   try {
-    // Get user from header (replace with proper auth)
-    const userId = req.headers.get('x-user-id');
+    // Get user from NextAuth session
+    const session = await auth();
+    const userId = session?.user?.id;
     if (!userId) {
       return new Response('Unauthorized', { status: 401 });
     }
