@@ -140,9 +140,31 @@ export const organizationRouter = router({
         .from(teams)
         .where(eq(teams.orgId, input.orgId));
 
+      // Get role distribution
+      const members = await ctx.db.query.organizationMembers.findMany({
+        where: eq(organizationMembers.orgId, input.orgId),
+      });
+
+      const roleDistribution: Record<string, number> = {
+        owner: 0,
+        admin: 0,
+        manager: 0,
+        member: 0,
+      };
+
+      members.forEach(m => {
+        const role = m.role as string;
+        if (role in roleDistribution) {
+          roleDistribution[role]++;
+        }
+      });
+
       return {
-        memberCount: memberCount?.count || 0,
-        teamCount: teamCount?.count || 0,
+        totalMembers: memberCount?.count || 0,
+        totalTeams: teamCount?.count || 0,
+        coursesEnrolled: 0, // Placeholder - would need course enrollment tracking
+        completionRate: 0, // Placeholder - would need progress tracking
+        roleDistribution,
       };
     }),
 
@@ -200,6 +222,7 @@ export const organizationRouter = router({
 
       return filteredMembers.map(m => ({
         id: m.id,
+        userId: m.userId,
         role: m.role as OrgRole,
         joinedAt: m.joinedAt,
         user: m.user,
@@ -517,6 +540,7 @@ export const organizationRouter = router({
         ...team,
         members: team.members.map(m => ({
           id: m.id,
+          userId: m.userId,
           role: m.role as TeamRole,
           joinedAt: m.joinedAt,
           user: m.user,
