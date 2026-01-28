@@ -20,17 +20,10 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-// Hardcoded user ID for demo - in real app this comes from auth
-const TEST_USER_ID = '11111111-1111-1111-1111-111111111111';
-
 export default function Dashboard() {
   const { data: domains, isLoading: domainsLoading } = trpc.course.getDomains.useQuery();
-  const { data: profile, isLoading: profileLoading } = trpc.gamification.getProfile.useQuery(undefined, {
-    context: { headers: { 'x-user-id': TEST_USER_ID } },
-  });
-  const { data: achievements } = trpc.gamification.getAchievements.useQuery(undefined, {
-    context: { headers: { 'x-user-id': TEST_USER_ID } },
-  });
+  const { data: profile, isLoading: profileLoading } = trpc.gamification.getProfile.useQuery();
+  const { data: achievements } = trpc.gamification.getAchievements.useQuery();
 
   const domainIcons: Record<string, React.ReactNode> = {
     python: <Code className="h-6 w-6" />,
