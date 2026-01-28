@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { trpc } from '@/lib/trpc/client';
-import { generateLinkedInShareUrl, getVerificationUrl } from '@/lib/certificates';
+import { generateLinkedInShareUrl, getVerificationUrl } from '@/lib/certificates/utils';
 import {
   Award,
   Download,
