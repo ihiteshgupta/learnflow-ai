@@ -76,11 +76,11 @@ export const QUIZ_GENERATION_PROMPT = `Generate a quiz with the following specif
 Generate a JSON object with this structure:
 
 \`\`\`json
-{
+{{
   "title": "Quiz title",
   "description": "Brief description of what this quiz covers",
   "questions": [
-    {
+    {{
       "id": "q1",
       "type": "multiple_choice|code_output|bug_finding|code_completion|conceptual|true_false|ordering",
       "question": "The question text",
@@ -93,13 +93,13 @@ Generate a JSON object with this structure:
       "points": 10,
       "tags": ["concept1", "concept2"],
       "timeEstimate": 60
-    }
+    }}
   ],
   "totalPoints": 100,
   "passingScore": 70,
   "timeLimit": 600,
   "tags": ["topic1", "topic2"]
-}
+}}
 \`\`\`
 
 ## Requirements:
@@ -151,12 +151,12 @@ export const EXAM_GENERATION_PROMPT = `Generate a certification exam with the fo
 Generate a JSON object with this structure:
 
 \`\`\`json
-{
+{{
   "title": "Certification Exam Title",
   "description": "Comprehensive exam description",
   "certificationTier": "bronze|silver|gold|platinum",
   "questions": [
-    {
+    {{
       "id": "e1",
       "type": "multiple_choice|code_output|bug_finding|code_completion|conceptual|true_false|ordering",
       "question": "The question text",
@@ -171,7 +171,7 @@ Generate a JSON object with this structure:
       "tags": ["concept1"],
       "timeEstimate": 90,
       "partialCreditRubric": "For conceptual questions, define partial credit criteria"
-    }
+    }}
   ],
   "totalPoints": 100,
   "passingScore": 70,
@@ -180,7 +180,7 @@ Generate a JSON object with this structure:
   "allowReview": true,
   "shuffleQuestions": true,
   "shuffleOptions": true
-}
+}}
 \`\`\`
 
 ## Requirements:
@@ -199,7 +199,7 @@ export const SINGLE_QUESTION_PROMPT = `Generate a single {type} question about {
 
 Output format:
 \`\`\`json
-{
+{{
   "id": "generated_1",
   "type": "{type}",
   "question": "The question text",
@@ -211,7 +211,7 @@ Output format:
   "difficulty": {difficulty},
   "points": 10,
   "tags": ["relevant", "tags"]
-}
+}}
 \`\`\`
 
 Generate one high-quality question now.`;

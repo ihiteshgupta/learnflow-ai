@@ -47,12 +47,12 @@ Analyze the student's current position and target role, then provide a comprehen
 
 ## Response Format
 You MUST respond with a JSON object in this exact format:
-{
+{{
   "roadmap": ["Step 1...", "Step 2...", "Step 3..."],
   "skillGaps": ["Skill 1", "Skill 2", "Skill 3"],
   "recommendations": ["Recommendation 1", "Recommendation 2"],
   "estimatedTimeline": "X-Y months"
-}
+}}
 
 ## Guidelines
 - Be realistic about timelines based on experience level
@@ -74,11 +74,11 @@ Craft a personalized motivational message that acknowledges their situation and 
 
 ## Response Format
 You MUST respond with a JSON object in this exact format:
-{
+{{
   "message": "Your personalized motivational message here...",
   "actionItems": ["Action 1", "Action 2", "Action 3"],
   "encouragement": "A supportive closing statement..."
-}
+}}
 
 ## Guidelines
 - If streak is broken, be understanding not judgmental
@@ -105,15 +105,15 @@ Review and refine the student's goals to make them SMART (Specific, Measurable, 
 
 ## Response Format
 You MUST respond with a JSON object in this exact format:
-{
-  "refinedGoals": {
+{{
+  "refinedGoals": {{
     "short": ["Refined short-term goal 1", "Refined short-term goal 2"],
     "medium": ["Refined medium-term goal 1", "Refined medium-term goal 2"],
     "long": ["Refined long-term goal 1"]
-  },
+  }},
   "milestones": ["Milestone 1", "Milestone 2", "Milestone 3", "Milestone 4"],
   "checkpoints": ["YYYY-MM-DD", "YYYY-MM-DD", "YYYY-MM-DD", "YYYY-MM-DD"]
-}
+}}
 
 ## Guidelines
 - Make goals specific and actionable

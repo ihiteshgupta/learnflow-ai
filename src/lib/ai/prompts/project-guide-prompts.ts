@@ -43,18 +43,18 @@ Create a structured set of milestones that guide the student through building th
 
 ## Response Format
 You MUST respond with a JSON object in this exact format:
-{
+{{
   "milestones": [
-    {
+    {{
       "id": "milestone-1",
       "name": "Milestone Name",
       "description": "Detailed description of what this milestone achieves",
       "criteria": ["Criterion 1", "Criterion 2", "Criterion 3"],
       "status": "pending",
       "estimatedHours": 4
-    }
+    }}
   ]
-}
+}}
 
 ## Guidelines for Difficulty Levels
 - **beginner**: 4-6 milestones, 2-4 hours each, focus on fundamentals
@@ -87,12 +87,12 @@ Evaluate whether the milestone criteria have been met and provide constructive f
 
 ## Response Format
 You MUST respond with a JSON object in this exact format:
-{
+{{
   "approved": true|false,
   "feedback": "Overall assessment of the submission...",
   "improvements": ["Improvement suggestion 1", "Improvement suggestion 2"],
   "nextSteps": ["Recommended next step 1", "Recommended next step 2"]
-}
+}}
 
 ## Review Guidelines
 - Be thorough but encouraging
@@ -146,21 +146,21 @@ Score each category on the specified scale:
 
 ## Response Format
 You MUST respond with a JSON object in this exact format:
-{
-  "scores": {
+{{
+  "scores": {{
     "codeQuality": 20,
     "functionality": 25,
     "testing": 15,
     "documentation": 12,
     "deployment": 8
-  },
+  }},
   "totalScore": 80,
   "passed": true,
   "feedback": "Overall evaluation summary...",
   "strengths": ["Strength 1", "Strength 2", "Strength 3"],
   "improvements": ["Area for improvement 1", "Area for improvement 2"],
   "recommendation": "approve|revise|reject"
-}
+}}
 
 ## Evaluation Guidelines
 - Be fair and consistent in scoring
@@ -183,17 +183,17 @@ Suggest 3-5 portfolio projects that would be appropriate for this student's skil
 
 ## Response Format
 You MUST respond with a JSON object in this exact format:
-{
+{{
   "projects": [
-    {
+    {{
       "title": "Project Title",
       "description": "Brief project description explaining what the student will build",
       "technologies": ["Tech 1", "Tech 2", "Tech 3"],
       "estimatedHours": 40,
       "learningOutcomes": ["What they will learn 1", "What they will learn 2"]
-    }
+    }}
   ]
-}
+}}
 
 ## Project Selection Guidelines
 
