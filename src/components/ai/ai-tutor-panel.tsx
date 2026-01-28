@@ -17,13 +17,13 @@ interface Message {
 }
 
 interface AITutorPanelProps {
-  lessonId: string;
+  lessonId?: string;
   className?: string;
   onSendMessage?: (message: string) => Promise<string>;
 }
 
 export function AITutorPanel({
-  lessonId,
+  lessonId: _lessonId,
   className,
   onSendMessage,
 }: AITutorPanelProps) {

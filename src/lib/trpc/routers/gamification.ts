@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure } from '../trpc';
-import { userProfiles, achievements, userAchievements, xpTransactions, streakHistory } from '@/lib/db/schema';
+import { userProfiles, userAchievements, xpTransactions, streakHistory } from '@/lib/db/schema';
 import { eq, desc, and, gte, sql } from 'drizzle-orm';
 import { calculateStreak, getStreakReward } from '@/lib/utils/streak-calculator';
 import { calculateLevelFromXP, getXPProgressInLevel } from '@/lib/utils/xp-calculator';
@@ -117,7 +117,7 @@ export const gamificationRouter = router({
       limit: z.number().min(1).max(100).default(50),
     }))
     .query(async ({ ctx, input }) => {
-      const periodStart = input.period === 'weekly'
+      const _periodStart = input.period === 'weekly'
         ? startOfWeek(new Date())
         : input.period === 'monthly'
         ? startOfMonth(new Date())

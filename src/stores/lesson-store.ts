@@ -18,7 +18,7 @@ interface LessonState {
   reset: () => void;
 }
 
-export const useLessonStore = create<LessonState>((set, get) => ({
+export const useLessonStore = create<LessonState>((set, _get) => ({
   currentStep: 1,
   totalSteps: 1,
   progress: 0,

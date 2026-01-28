@@ -22,7 +22,7 @@ import { cn } from '@/lib/utils';
 
 export default function Dashboard() {
   const { data: domains, isLoading: domainsLoading } = trpc.course.getDomains.useQuery();
-  const { data: profile, isLoading: profileLoading } = trpc.gamification.getProfile.useQuery();
+  const { data: profile } = trpc.gamification.getProfile.useQuery();
   const { data: achievements } = trpc.gamification.getAchievements.useQuery();
 
   const domainIcons: Record<string, React.ReactNode> = {
@@ -128,7 +128,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
-                {achievements?.filter((a: any) => a.earned).length || 0}
+                {achievements?.filter((a) => a.earned).length || 0}
                 <span className="text-lg font-normal text-muted-foreground">
                   {' / '}{achievements?.length || 0}
                 </span>
@@ -187,7 +187,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {domains?.map((domain: any) => (
+              {domains?.map((domain) => (
                 <Card
                   key={domain.id}
                   className="card-hover cursor-pointer group border-0 shadow-md overflow-hidden"
@@ -241,7 +241,7 @@ export default function Dashboard() {
               </Button>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {achievements.slice(0, 4).map((achievement: any) => (
+              {achievements.slice(0, 4).map((achievement) => (
                 <Card
                   key={achievement.id}
                   className={cn(

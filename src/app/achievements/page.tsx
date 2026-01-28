@@ -2,7 +2,7 @@
 
 import { trpc } from '@/lib/trpc/client';
 import { MainLayout } from '@/components/layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -10,7 +10,6 @@ import {
   Trophy,
   Star,
   Zap,
-  Target,
   Flame,
   BookOpen,
   Award,
@@ -28,11 +27,11 @@ const achievementCategories = [
   { id: 'special', label: 'Special', icon: Award },
 ];
 
-const rarityColors: Record<string, string> = {
-  common: 'from-slate-400 to-slate-500',
-  rare: 'from-blue-400 to-blue-500',
-  epic: 'from-violet-400 to-violet-500',
-  legendary: 'from-amber-400 via-amber-500 to-rose-500',
+const categoryColors: Record<string, string> = {
+  learning: 'from-blue-400 to-blue-500',
+  streak: 'from-rose-400 to-rose-500',
+  mastery: 'from-violet-400 to-violet-500',
+  special: 'from-amber-400 via-amber-500 to-rose-500',
 };
 
 export default function AchievementsPage() {
@@ -40,7 +39,7 @@ export default function AchievementsPage() {
 
   const { data: profile } = trpc.gamification.getProfile.useQuery();
 
-  const earnedCount = achievements?.filter((a: any) => a.earned).length || 0;
+  const earnedCount = achievements?.filter((a) => a.earned).length || 0;
   const totalCount = achievements?.length || 0;
   const progressPercentage = totalCount > 0 ? (earnedCount / totalCount) * 100 : 0;
 
@@ -156,7 +155,7 @@ export default function AchievementsPage() {
                   </Card>
                 ))
               ) : (
-                achievements?.map((achievement: any) => (
+                achievements?.map((achievement) => (
                   <Card
                     key={achievement.id}
                     className={cn(
@@ -173,7 +172,7 @@ export default function AchievementsPage() {
                         <div className={cn(
                           'relative p-4 rounded-xl',
                           achievement.earned
-                            ? `bg-gradient-to-br ${rarityColors[achievement.rarity] || rarityColors.common}`
+                            ? `bg-gradient-to-br ${categoryColors[achievement.category] || 'from-slate-400 to-slate-500'}`
                             : 'bg-muted'
                         )}>
                           <Trophy className={cn(
@@ -192,12 +191,13 @@ export default function AchievementsPage() {
                               variant="outline"
                               className={cn(
                                 'text-xs capitalize',
-                                achievement.rarity === 'legendary' && 'border-amber text-amber',
-                                achievement.rarity === 'epic' && 'border-violet text-violet',
-                                achievement.rarity === 'rare' && 'border-blue-500 text-blue-500'
+                                achievement.category === 'special' && 'border-amber text-amber',
+                                achievement.category === 'mastery' && 'border-violet text-violet',
+                                achievement.category === 'streak' && 'border-rose text-rose',
+                                achievement.category === 'learning' && 'border-blue-500 text-blue-500'
                               )}
                             >
-                              {achievement.rarity}
+                              {achievement.category}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mb-3">

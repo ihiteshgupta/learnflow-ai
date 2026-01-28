@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { MainLayout } from '@/components/layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
@@ -229,7 +229,7 @@ export default function HelpPage() {
             <Card className="border-0 shadow-md">
               <CardContent className="p-6 text-center">
                 <p className="text-muted-foreground">
-                  No results found for "{searchQuery}". Try a different search term.
+                  No results found for &quot;{searchQuery}&quot;. Try a different search term.
                 </p>
               </CardContent>
             </Card>

@@ -15,10 +15,7 @@ import {
   Search,
   Clock,
   Users,
-  Star,
   Play,
-  Lock,
-  CheckCircle,
   Filter,
   Zap,
 } from 'lucide-react';
@@ -78,7 +75,7 @@ export default function CoursesPage() {
             <TabsTrigger value="all" onClick={() => setSelectedDomain(null)}>
               All Domains
             </TabsTrigger>
-            {domains?.map((domain: any) => (
+            {domains?.map((domain) => (
               <TabsTrigger
                 key={domain.id}
                 value={domain.slug}
@@ -106,7 +103,7 @@ export default function CoursesPage() {
                     </Card>
                   ))
                 ) : (
-                  domains?.map((domain: any) => (
+                  domains?.map((domain) => (
                     <Card
                       key={domain.id}
                       className="card-hover cursor-pointer group border-0 shadow-md"
@@ -158,7 +155,7 @@ export default function CoursesPage() {
                     </Card>
                   ))
                 ) : (
-                  tracks?.map((track: any) => (
+                  tracks?.map((track) => (
                     <Card key={track.id} className="card-hover border-0 shadow-md overflow-hidden">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-3">
@@ -228,10 +225,10 @@ export default function CoursesPage() {
           </TabsContent>
 
           {/* Individual domain tabs - show same content but filtered */}
-          {domains?.map((domain: any) => (
+          {domains?.map((domain) => (
             <TabsContent key={domain.id} value={domain.slug}>
               <div className="grid gap-4 md:grid-cols-2">
-                {tracks?.map((track: any) => (
+                {tracks?.map((track) => (
                   <Card key={track.id} className="card-hover border-0 shadow-md">
                     <CardContent className="p-6">
                       <h3 className="font-semibold text-lg">{track.name}</h3>

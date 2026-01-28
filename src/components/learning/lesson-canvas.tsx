@@ -13,7 +13,7 @@ interface LessonCanvasProps {
   onComplete: () => void;
 }
 
-export function LessonCanvas({ lesson, step, onComplete }: LessonCanvasProps) {
+export function LessonCanvas({ lesson, step: _step, onComplete }: LessonCanvasProps) {
   const content = lesson.content as Record<string, unknown>;
 
   switch (lesson.type) {
@@ -32,7 +32,7 @@ export function LessonCanvas({ lesson, step, onComplete }: LessonCanvasProps) {
         <VisualizationCanvas
           type={content.visualizationType as 'memory' | 'algorithm' | 'dataflow' | 'network'}
           steps={content.steps as []}
-          renderStep={(data, type) => (
+          renderStep={(data, _type) => (
             <div className="p-4 border rounded-lg bg-background">
               <pre>{JSON.stringify(data, null, 2)}</pre>
             </div>

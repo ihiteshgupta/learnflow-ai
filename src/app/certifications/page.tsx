@@ -1,7 +1,7 @@
 'use client';
 
 import { MainLayout } from '@/components/layout';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -11,7 +11,6 @@ import {
   Share2,
   ExternalLink,
   Calendar,
-  CheckCircle,
   Clock,
   BookOpen,
   Lock,

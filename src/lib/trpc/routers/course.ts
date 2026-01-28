@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure, publicProcedure } from '../trpc';
-import { domains, tracks, courses, modules, lessons, enrollments, progress } from '@/lib/db/schema';
+import { tracks, courses, lessons, enrollments, progress } from '@/lib/db/schema';
 import { eq, and } from 'drizzle-orm';
 
 export const courseRouter = router({

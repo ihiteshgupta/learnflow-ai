@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { router, protectedProcedure } from '../trpc';
 import { progress, userProfiles, xpTransactions } from '@/lib/db/schema';
 import { eq, and, sql } from 'drizzle-orm';
-import { calculateXP, calculateLevelFromXP } from '@/lib/utils/xp-calculator';
+import { calculateXP } from '@/lib/utils/xp-calculator';
 
 export const progressRouter = router({
   updateProgress: protectedProcedure

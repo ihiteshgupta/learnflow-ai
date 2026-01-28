@@ -103,6 +103,7 @@ function createCaller(ctx: ReturnType<typeof createMockContext>) {
       }
       // Call the actual procedure with the context
       const procedure = gamificationRouter._def.procedures.getProfile;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return await (procedure as any)._def.resolver({ ctx: { ...ctx, user: ctx.user } });
     },
     checkStreak: async () => {
@@ -110,6 +111,7 @@ function createCaller(ctx: ReturnType<typeof createMockContext>) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       const procedure = gamificationRouter._def.procedures.checkStreak;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return await (procedure as any)._def.resolver({ ctx: { ...ctx, user: ctx.user } });
     },
     getLeaderboard: async (input: { scope?: 'global' | 'team' | 'organization'; period?: 'weekly' | 'monthly' | 'allTime'; limit?: number }) => {
@@ -122,6 +124,7 @@ function createCaller(ctx: ReturnType<typeof createMockContext>) {
         period: input.period ?? 'weekly',
         limit: input.limit ?? 50,
       };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return await (procedure as any)._def.resolver({ ctx: { ...ctx, user: ctx.user }, input: parsedInput });
     },
     getAchievements: async () => {
@@ -129,6 +132,7 @@ function createCaller(ctx: ReturnType<typeof createMockContext>) {
         throw new TRPCError({ code: 'UNAUTHORIZED' });
       }
       const procedure = gamificationRouter._def.procedures.getAchievements;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return await (procedure as any)._def.resolver({ ctx: { ...ctx, user: ctx.user } });
     },
     getXPHistory: async (input: { days?: number }) => {
@@ -137,6 +141,7 @@ function createCaller(ctx: ReturnType<typeof createMockContext>) {
       }
       const procedure = gamificationRouter._def.procedures.getXPHistory;
       const parsedInput = { days: input.days ?? 30 };
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       return await (procedure as any)._def.resolver({ ctx: { ...ctx, user: ctx.user }, input: parsedInput });
     },
   };
@@ -441,12 +446,14 @@ describe('gamification router', () => {
     });
 
     it('getLeaderboard has input validation', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const procedure = gamificationRouter._def.procedures.getLeaderboard as any;
       expect(procedure._def.inputs).toBeDefined();
       expect(procedure._def.inputs.length).toBeGreaterThan(0);
     });
 
     it('getXPHistory has input validation', () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const procedure = gamificationRouter._def.procedures.getXPHistory as any;
       expect(procedure._def.inputs).toBeDefined();
       expect(procedure._def.inputs.length).toBeGreaterThan(0);

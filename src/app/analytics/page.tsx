@@ -5,7 +5,6 @@ import { MainLayout } from '@/components/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
-  BarChart3,
   TrendingUp,
   Clock,
   Target,
