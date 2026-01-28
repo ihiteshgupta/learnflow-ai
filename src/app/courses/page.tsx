@@ -24,8 +24,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-const TEST_USER_ID = '11111111-1111-1111-1111-111111111111';
-
 const domainIcons: Record<string, React.ReactNode> = {
   python: <Code className="h-5 w-5" />,
   'data-science': <Brain className="h-5 w-5" />,
@@ -44,8 +42,7 @@ export default function CoursesPage() {
 
   const { data: domains, isLoading: domainsLoading } = trpc.course.getDomains.useQuery();
   const { data: tracks, isLoading: tracksLoading } = trpc.course.getTracks.useQuery(
-    selectedDomain ? { domainId: selectedDomain } : undefined,
-    { context: { headers: { 'x-user-id': TEST_USER_ID } } }
+    selectedDomain ? { domainId: selectedDomain } : undefined
   );
 
   return (
