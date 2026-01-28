@@ -1,10 +1,7 @@
 import { db } from '@/lib/db';
 import { users } from '@/lib/db/schema';
 import { eq } from 'drizzle-orm';
-
-// UUID-like pattern: 8-4-4-4-12 hex characters
-// More lenient than strict RFC 4122 to allow test UUIDs
-const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+import { auth } from '@/lib/auth';
 
 export interface Context {
   db: typeof db;
@@ -18,22 +15,15 @@ export interface Context {
   } | null;
 }
 
-export async function createContext(opts: { headers: Headers }): Promise<Context> {
-  // For now, we'll use a simple header-based auth
-  // Later replace with NextAuth session
-  const userId = opts.headers.get('x-user-id');
+export async function createContext(): Promise<Context> {
+  // Get session from NextAuth
+  const session = await auth();
 
   let user = null;
-  if (userId) {
-    // Validate UUID format before querying database
-    if (!UUID_PATTERN.test(userId)) {
-      // Invalid UUID format - return null user (will trigger UNAUTHORIZED)
-      return { db, user: null };
-    }
-
+  if (session?.user?.id) {
     try {
       const dbUser = await db.query.users.findFirst({
-        where: eq(users.id, userId),
+        where: eq(users.id, session.user.id),
       });
       if (dbUser) {
         user = {
@@ -46,7 +36,6 @@ export async function createContext(opts: { headers: Headers }): Promise<Context
         };
       }
     } catch (error) {
-      // Log error internally but don't expose details
       console.error('Database error during user lookup:', error);
       return { db, user: null };
     }
