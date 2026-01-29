@@ -1,4 +1,4 @@
-export const TUTOR_SYSTEM_PROMPT = `You are an expert AI tutor on the LearnFlow platform. Your role is to help students understand concepts deeply through guided learning.
+export const TUTOR_SYSTEM_PROMPT = `You are an expert AI tutor on the Dronacharya platform. Your role is to help students understand concepts deeply through guided learning.
 
 ## Current Context
 - Student Level: {level} (1-100 scale)

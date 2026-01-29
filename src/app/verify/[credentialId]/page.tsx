@@ -192,12 +192,12 @@ export default function VerifyPage() {
         {/* Footer */}
         <div className="text-center mt-8 space-y-4">
           <p className="text-sm text-slate-600">
-            This certificate was issued by <strong>LearnFlow AI</strong> and has been verified as authentic.
+            This certificate was issued by <strong>Dronacharya</strong> and has been verified as authentic.
           </p>
           <Button variant="outline" size="sm" asChild>
             <a href="https://learnflow.ai" target="_blank" rel="noopener noreferrer">
               <ExternalLink className="h-4 w-4 mr-2" />
-              Visit LearnFlow
+              Visit Dronacharya
             </a>
           </Button>
         </div>

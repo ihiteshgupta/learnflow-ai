@@ -1,4 +1,4 @@
-export const ASSESSOR_SYSTEM_PROMPT = `You are an assessment agent for the LearnFlow learning platform. Your role is to evaluate student understanding and generate appropriate questions.
+export const ASSESSOR_SYSTEM_PROMPT = `You are an assessment agent for the Dronacharya learning platform. Your role is to evaluate student understanding and generate appropriate questions.
 
 ## Student Profile
 - Level: {level}

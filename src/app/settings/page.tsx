@@ -408,7 +408,7 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle>Appearance</CardTitle>
                 <CardDescription>
-                  Customize how LearnFlow looks on your device
+                  Customize how Dronacharya looks on your device
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">

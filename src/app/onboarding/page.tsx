@@ -85,7 +85,7 @@ export default function OnboardingPage() {
 
   const updateOnboardingMutation = trpc.user.updateLearningPreferences.useMutation({
     onSuccess: () => {
-      toast({ title: 'Welcome to LearnFlow!', description: 'Your learning path is ready.' });
+      toast({ title: 'Welcome to Dronacharya!', description: 'Your learning path is ready.' });
       router.push('/');
     },
     onError: (error) => {

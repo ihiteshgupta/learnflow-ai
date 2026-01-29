@@ -232,7 +232,7 @@ export default function CertificationsPage() {
                           </div>
 
                           <p className="text-sm text-muted-foreground mb-2">
-                            Issued by LearnFlow AI
+                            Issued by Dronacharya
                           </p>
 
                           {/* Skills */}

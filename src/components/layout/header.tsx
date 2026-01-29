@@ -33,18 +33,23 @@ interface HeaderProps {
 function Logo() {
   return (
     <Link href="/" className="flex items-center gap-2 group">
-      {/* Logo Icon */}
+      {/* Logo Icon - Bow and Arrow representing Dronacharya */}
       <div className="relative flex items-center justify-center w-9 h-9 rounded-xl gradient-brand shadow-lg shadow-primary/25 group-hover:shadow-primary/40 transition-shadow duration-300">
-        <Sparkles className="w-5 h-5 text-white" />
+        <svg className="w-5 h-5 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+          <path d="M12 8v8" />
+          <path d="M8 12h8" />
+          <circle cx="12" cy="12" r="2" fill="currentColor" />
+        </svg>
         <div className="absolute inset-0 rounded-xl bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
       {/* Logo Text */}
       <div className="flex flex-col">
         <span className="font-bold text-xl tracking-tight gradient-text">
-          LearnFlow
+          Dronacharya
         </span>
         <span className="text-[10px] font-medium text-muted-foreground -mt-1 tracking-widest uppercase">
-          AI
+          Learn with AI
         </span>
       </div>
     </Link>

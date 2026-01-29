@@ -16,8 +16,8 @@ export function generateLinkedInShareUrl(input: {
 
   const params = new URLSearchParams({
     startTask: 'CERTIFICATION_NAME',
-    name: `${input.courseName} - LearnFlow Certification`,
-    organizationName: 'LearnFlow AI',
+    name: `${input.courseName} - Dronacharya Certification`,
+    organizationName: 'Dronacharya',
     issueYear: year.toString(),
     issueMonth: month.toString(),
     certUrl: verifyUrl,

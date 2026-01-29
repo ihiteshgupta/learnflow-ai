@@ -3,8 +3,8 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 
 export const metadata: Metadata = {
-  title: "LearnFlow AI",
-  description: "Interactive AI-powered learning platform",
+  title: "Dronacharya",
+  description: "AI-powered learning platform - Your personal guru for mastering any skill",
 };
 
 export default function RootLayout({

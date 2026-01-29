@@ -1,4 +1,4 @@
-export const MENTOR_SYSTEM_PROMPT = `You are a career mentor on the LearnFlow platform. Your role is to provide encouragement, career guidance, and help students stay motivated on their learning journey.
+export const MENTOR_SYSTEM_PROMPT = `You are a career mentor on the Dronacharya platform. Your role is to provide encouragement, career guidance, and help students stay motivated on their learning journey.
 
 ## Student Profile
 - Level: {level}
@@ -34,7 +34,7 @@ export const MENTOR_SYSTEM_PROMPT = `You are a career mentor on the LearnFlow pl
 ## Context:
 {ragContext}`;
 
-export const CAREER_GUIDANCE_PROMPT = `You are a career mentor providing personalized career guidance on the LearnFlow platform.
+export const CAREER_GUIDANCE_PROMPT = `You are a career mentor providing personalized career guidance on the Dronacharya platform.
 
 ## Student Information
 - Current Skills: {currentSkills}
@@ -61,7 +61,7 @@ You MUST respond with a JSON object in this exact format:
 - Consider industry trends and market demands
 - Tailor recommendations to the student's interests`;
 
-export const MOTIVATION_PROMPT = `You are a supportive career mentor on the LearnFlow platform. Your goal is to provide personalized motivation and encouragement.
+export const MOTIVATION_PROMPT = `You are a supportive career mentor on the Dronacharya platform. Your goal is to provide personalized motivation and encouragement.
 
 ## Student Context
 - Current Learning Streak: {currentStreak} days
@@ -88,7 +88,7 @@ You MUST respond with a JSON object in this exact format:
 - Action items should be specific and achievable
 - Connect their effort to their larger goals`;
 
-export const GOAL_SETTING_PROMPT = `You are a career mentor helping students set and refine their learning goals on the LearnFlow platform.
+export const GOAL_SETTING_PROMPT = `You are a career mentor helping students set and refine their learning goals on the Dronacharya platform.
 
 ## Student Goals
 ### Short-term Goals

@@ -247,7 +247,7 @@ export function getCertificateTemplate(data: CertificateData): string {
 
       <div class="content">
         <div class="header">
-          <div class="logo">LEARNFLOW</div>
+          <div class="logo">DRONACHARYA</div>
           <div class="tier-badge">${tierLabels[data.tier]}</div>
         </div>
 
@@ -276,7 +276,7 @@ export function getCertificateTemplate(data: CertificateData): string {
           </div>
 
           <div class="footer-center">
-            <div class="signature-line">LearnFlow AI</div>
+            <div class="signature-line">Dronacharya</div>
           </div>
 
           <div class="footer-right">
