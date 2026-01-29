@@ -19,6 +19,8 @@ export const userRouter = router({
     .input(z.object({
       name: z.string().min(1).max(255).optional(),
       avatarUrl: z.string().url().optional(),
+      avatarDataUrl: z.string().max(500000).optional(), // Base64 avatar, max ~375KB image
+      bio: z.string().max(500).optional(),
       preferences: z.object({
         theme: z.enum(['light', 'dark', 'system']).optional(),
         notifications: z.boolean().optional(),
@@ -26,14 +28,37 @@ export const userRouter = router({
       }).optional(),
     }))
     .mutation(async ({ ctx, input }) => {
+      // Build the update object
+      const updateData: Record<string, unknown> = {
+        updatedAt: new Date(),
+      };
+
+      if (input.name !== undefined) {
+        updateData.name = input.name;
+      }
+      if (input.avatarUrl !== undefined) {
+        updateData.avatarUrl = input.avatarUrl;
+      }
+
+      // Handle bio, avatarDataUrl, and other preferences by merging with existing
+      if (input.bio !== undefined || input.avatarDataUrl !== undefined || input.preferences !== undefined) {
+        const existing = await ctx.db.query.users.findFirst({
+          where: eq(users.id, ctx.user.id),
+          columns: { preferences: true },
+        });
+
+        const currentPrefs = (existing?.preferences as Record<string, unknown>) || {};
+        updateData.preferences = {
+          ...currentPrefs,
+          ...(input.preferences || {}),
+          ...(input.bio !== undefined ? { bio: input.bio } : {}),
+          ...(input.avatarDataUrl !== undefined ? { avatarDataUrl: input.avatarDataUrl } : {}),
+        };
+      }
+
       const [updated] = await ctx.db
         .update(users)
-        .set({
-          name: input.name,
-          avatarUrl: input.avatarUrl,
-          preferences: input.preferences,
-          updatedAt: new Date(),
-        })
+        .set(updateData)
         .where(eq(users.id, ctx.user.id))
         .returning();
 
@@ -75,4 +100,28 @@ export const userRouter = router({
       studyPreferences: profile?.studyPreferences,
     };
   }),
+
+  deleteAccount: protectedProcedure
+    .input(z.object({
+      confirmEmail: z.string().email(),
+    }))
+    .mutation(async ({ ctx, input }) => {
+      // Verify email matches for safety
+      const user = await ctx.db.query.users.findFirst({
+        where: eq(users.id, ctx.user.id),
+        columns: { email: true },
+      });
+
+      if (!user || user.email !== input.confirmEmail) {
+        throw new Error('Email confirmation does not match your account email');
+      }
+
+      // Delete user profile first (foreign key constraint)
+      await ctx.db.delete(userProfiles).where(eq(userProfiles.userId, ctx.user.id));
+
+      // Delete the user account
+      await ctx.db.delete(users).where(eq(users.id, ctx.user.id));
+
+      return { success: true };
+    }),
 });

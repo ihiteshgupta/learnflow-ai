@@ -9,6 +9,15 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useToast } from '@/hooks/use-toast';
 import {
   BookOpen,
@@ -21,8 +30,12 @@ import {
   Filter,
   Zap,
   Loader2,
+  X,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+const DIFFICULTY_LEVELS = ['all', 'beginner', 'intermediate', 'advanced', 'expert'] as const;
+type Difficulty = typeof DIFFICULTY_LEVELS[number];
 
 const domainIcons: Record<string, React.ReactNode> = {
   python: <Code className="h-5 w-5" />,
@@ -41,6 +54,7 @@ export default function CoursesPage() {
   const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
+  const [selectedDifficulty, setSelectedDifficulty] = useState<Difficulty>('all');
   const [enrollingTrackId, setEnrollingTrackId] = useState<string | null>(null);
 
   const utils = trpc.useUtils();
@@ -76,6 +90,23 @@ export default function CoursesPage() {
     router.push(`/paths/${trackSlug}/learn`);
   };
 
+  // Filter tracks based on search query and difficulty
+  const filteredTracks = tracks?.filter((track) => {
+    const matchesSearch = searchQuery === '' ||
+      track.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      track.description?.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesDifficulty = selectedDifficulty === 'all' ||
+      track.difficulty === selectedDifficulty;
+    return matchesSearch && matchesDifficulty;
+  });
+
+  const clearFilters = () => {
+    setSearchQuery('');
+    setSelectedDifficulty('all');
+  };
+
+  const hasActiveFilters = searchQuery !== '' || selectedDifficulty !== 'all';
+
   return (
     <MainLayout>
       <div className="space-y-6">
@@ -97,9 +128,29 @@ export default function CoursesPage() {
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
             </div>
-            <Button variant="outline" size="icon">
-              <Filter className="h-4 w-4" />
-            </Button>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button variant="outline" size="icon" className={cn(hasActiveFilters && 'border-primary')}>
+                  <Filter className="h-4 w-4" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-48">
+                <DropdownMenuLabel>Difficulty Level</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuRadioGroup value={selectedDifficulty} onValueChange={(v) => setSelectedDifficulty(v as Difficulty)}>
+                  {DIFFICULTY_LEVELS.map((level) => (
+                    <DropdownMenuRadioItem key={level} value={level} className="capitalize">
+                      {level === 'all' ? 'All Levels' : level}
+                    </DropdownMenuRadioItem>
+                  ))}
+                </DropdownMenuRadioGroup>
+              </DropdownMenuContent>
+            </DropdownMenu>
+            {hasActiveFilters && (
+              <Button variant="ghost" size="icon" onClick={clearFilters} title="Clear filters">
+                <X className="h-4 w-4" />
+              </Button>
+            )}
           </div>
         </div>
 
@@ -185,8 +236,17 @@ export default function CoursesPage() {
                       </CardContent>
                     </Card>
                   ))
+                ) : filteredTracks?.length === 0 ? (
+                  <div className="col-span-2 text-center py-12">
+                    <p className="text-muted-foreground">No courses found matching your filters.</p>
+                    {hasActiveFilters && (
+                      <Button variant="link" onClick={clearFilters} className="mt-2">
+                        Clear filters
+                      </Button>
+                    )}
+                  </div>
                 ) : (
-                  tracks?.map((track) => (
+                  filteredTracks?.map((track) => (
                     <Card key={track.id} className="card-hover border-0 shadow-md overflow-hidden">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-3">
@@ -259,7 +319,16 @@ export default function CoursesPage() {
           {domains?.map((domain) => (
             <TabsContent key={domain.id} value={domain.slug}>
               <div className="grid gap-4 md:grid-cols-2">
-                {tracks?.map((track) => (
+                {filteredTracks?.length === 0 ? (
+                  <div className="col-span-2 text-center py-12">
+                    <p className="text-muted-foreground">No courses found matching your filters.</p>
+                    {hasActiveFilters && (
+                      <Button variant="link" onClick={clearFilters} className="mt-2">
+                        Clear filters
+                      </Button>
+                    )}
+                  </div>
+                ) : filteredTracks?.map((track) => (
                   <Card key={track.id} className="card-hover border-0 shadow-md">
                     <CardContent className="p-6">
                       <h3 className="font-semibold text-lg">{track.name}</h3>

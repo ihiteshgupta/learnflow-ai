@@ -48,6 +48,7 @@ export interface UserPreferences {
   theme?: 'light' | 'dark' | 'system';
   notifications?: boolean;
   emailDigest?: 'daily' | 'weekly' | 'never';
+  bio?: string;
 }
 
 export interface StudyPreferences {

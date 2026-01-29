@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState, useEffect, useRef } from 'react';
+import { useSession, signOut } from 'next-auth/react';
+import { useTheme } from 'next-themes';
 import { trpc } from '@/lib/trpc/client';
 import { MainLayout } from '@/components/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,6 +11,16 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 import { useToast } from '@/hooks/use-toast';
 import {
   User,
@@ -57,10 +68,25 @@ export default function SettingsPage() {
     bio: '',
   });
 
-  // Theme state
-  const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
+  // Theme state (persisted via next-themes)
+  const { theme, setTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
 
-  // Fetch notification preferences
+  // Delete account state
+  const [deleteConfirmEmail, setDeleteConfirmEmail] = useState('');
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+
+  // Avatar upload
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+
+  // Prevent hydration mismatch for theme UI (standard next-themes pattern)
+  useEffect(() => {
+    setMounted(true); // eslint-disable-line react-hooks/set-state-in-effect
+  }, []);
+
+  // Fetch user profile and notification preferences
+  const { data: userProfile } = trpc.user.getProfile.useQuery();
   const { data: notificationPrefs, isLoading: prefsLoading } = trpc.notifications.getPreferences.useQuery();
 
   // Mutations
@@ -84,21 +110,69 @@ export default function SettingsPage() {
     },
   });
 
-  // Initialize profile from session
+  const deleteAccountMutation = trpc.user.deleteAccount.useMutation({
+    onSuccess: () => {
+      toast({ title: 'Account deleted', description: 'Your account has been permanently deleted.' });
+      signOut({ callbackUrl: '/' });
+    },
+    onError: (error) => {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    },
+  });
+
+  // Initialize profile from session (intentional state sync from server data)
   useEffect(() => {
     if (session?.user) {
+      const prefs = userProfile?.preferences as { bio?: string; avatarDataUrl?: string } | undefined;
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setProfile({
         name: session.user.name ?? '',
         email: session.user.email ?? '',
-        bio: '',
+        bio: prefs?.bio ?? '',
       });
+      if (prefs?.avatarDataUrl) {
+        setAvatarPreview(prefs.avatarDataUrl);
+      } else if (userProfile?.avatarUrl) {
+        setAvatarPreview(userProfile.avatarUrl);
+      }
     }
-  }, [session]);
+  }, [session, userProfile]);
 
   const handleSaveProfile = () => {
     updateProfileMutation.mutate({
       name: profile.name,
+      bio: profile.bio,
     });
+  };
+
+  const handleAvatarUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({ title: 'Error', description: 'Please select an image file', variant: 'destructive' });
+      return;
+    }
+
+    // Validate file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: 'Error', description: 'Image must be less than 2MB', variant: 'destructive' });
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      setAvatarPreview(dataUrl);
+      // Save immediately
+      updateProfileMutation.mutate({
+        name: profile.name,
+        bio: profile.bio,
+        avatarDataUrl: dataUrl,
+      });
+    };
+    reader.readAsDataURL(file);
   };
 
   const handleToggleNotification = (type: string, channel: 'inApp' | 'email' | 'push', value: boolean) => {
@@ -164,16 +238,38 @@ export default function SettingsPage() {
                 {/* Avatar */}
                 <div className="flex items-center gap-6">
                   <div className="relative">
-                    <div className="h-24 w-24 rounded-full gradient-brand flex items-center justify-center text-white text-2xl font-bold">
-                      {getInitials(profile.name || 'U')}
-                    </div>
+                    {avatarPreview ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img
+                        src={avatarPreview}
+                        alt="Profile"
+                        className="h-24 w-24 rounded-full object-cover"
+                      />
+                    ) : (
+                      <div className="h-24 w-24 rounded-full gradient-brand flex items-center justify-center text-white text-2xl font-bold">
+                        {getInitials(profile.name || 'U')}
+                      </div>
+                    )}
                     <Button
                       size="icon"
                       variant="outline"
                       className="absolute -bottom-1 -right-1 h-8 w-8 rounded-full"
+                      onClick={() => fileInputRef.current?.click()}
+                      disabled={updateProfileMutation.isPending}
                     >
-                      <Camera className="h-4 w-4" />
+                      {updateProfileMutation.isPending ? (
+                        <Loader2 className="h-4 w-4 animate-spin" />
+                      ) : (
+                        <Camera className="h-4 w-4" />
+                      )}
                     </Button>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleAvatarUpload}
+                    />
                   </div>
                   <div>
                     <h3 className="font-semibold">Profile Photo</h3>
@@ -322,7 +418,7 @@ export default function SettingsPage() {
                     <button
                       onClick={() => setTheme('light')}
                       className={`p-4 rounded-xl border-2 transition-all ${
-                        theme === 'light'
+                        mounted && theme === 'light'
                           ? 'border-primary bg-primary/5'
                           : 'border-border hover:border-primary/50'
                       }`}
@@ -333,7 +429,7 @@ export default function SettingsPage() {
                     <button
                       onClick={() => setTheme('dark')}
                       className={`p-4 rounded-xl border-2 transition-all ${
-                        theme === 'dark'
+                        mounted && theme === 'dark'
                           ? 'border-primary bg-primary/5'
                           : 'border-border hover:border-primary/50'
                       }`}
@@ -344,7 +440,7 @@ export default function SettingsPage() {
                     <button
                       onClick={() => setTheme('system')}
                       className={`p-4 rounded-xl border-2 transition-all ${
-                        theme === 'system'
+                        mounted && theme === 'system'
                           ? 'border-primary bg-primary/5'
                           : 'border-border hover:border-primary/50'
                       }`}
@@ -421,9 +517,51 @@ export default function SettingsPage() {
                           Permanently delete your account and all data
                         </p>
                       </div>
-                      <Button variant="destructive" size="sm">
-                        Delete Account
-                      </Button>
+                      <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+                        <AlertDialogTrigger asChild>
+                          <Button variant="destructive" size="sm">
+                            Delete Account
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
+                            <AlertDialogDescription>
+                              This action cannot be undone. This will permanently delete your
+                              account and remove all your data from our servers, including your
+                              learning progress, achievements, and preferences.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <div className="py-4">
+                            <Label htmlFor="confirm-email" className="text-sm font-medium">
+                              Type your email to confirm: <span className="text-muted-foreground">{session?.user?.email}</span>
+                            </Label>
+                            <Input
+                              id="confirm-email"
+                              className="mt-2"
+                              placeholder="Enter your email"
+                              value={deleteConfirmEmail}
+                              onChange={(e) => setDeleteConfirmEmail(e.target.value)}
+                            />
+                          </div>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel onClick={() => setDeleteConfirmEmail('')}>
+                              Cancel
+                            </AlertDialogCancel>
+                            <Button
+                              variant="destructive"
+                              onClick={() => deleteAccountMutation.mutate({ confirmEmail: deleteConfirmEmail })}
+                              disabled={deleteConfirmEmail !== session?.user?.email || deleteAccountMutation.isPending}
+                            >
+                              {deleteAccountMutation.isPending ? (
+                                <><Loader2 className="mr-2 h-4 w-4 animate-spin" /> Deleting...</>
+                              ) : (
+                                'Delete Account'
+                              )}
+                            </Button>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </div>
                 </div>
