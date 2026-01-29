@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { trpc } from '@/lib/trpc/client';
 import { MainLayout } from '@/components/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -8,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import {
   BookOpen,
   Brain,
@@ -18,6 +20,7 @@ import {
   Play,
   Filter,
   Zap,
+  Loader2,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -34,13 +37,44 @@ const domainColors: Record<string, string> = {
 };
 
 export default function CoursesPage() {
+  const router = useRouter();
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedDomain, setSelectedDomain] = useState<string | null>(null);
+  const [enrollingTrackId, setEnrollingTrackId] = useState<string | null>(null);
 
+  const utils = trpc.useUtils();
   const { data: domains, isLoading: domainsLoading } = trpc.course.getDomains.useQuery();
   const { data: tracks, isLoading: tracksLoading } = trpc.course.getTracks.useQuery(
     selectedDomain ? { domainId: selectedDomain } : undefined
   );
+
+  const enrollMutation = trpc.course.enroll.useMutation({
+    onSuccess: (_, variables) => {
+      toast({ title: 'Enrolled!', description: 'You have been enrolled in this track.' });
+      utils.course.getTracks.invalidate();
+      // Find the track to get its slug for navigation
+      const track = tracks?.find(t => t.id === variables.trackId);
+      if (track) {
+        router.push(`/paths/${track.slug}/learn`);
+      }
+    },
+    onError: (error) => {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    },
+    onSettled: () => {
+      setEnrollingTrackId(null);
+    },
+  });
+
+  const handleEnroll = (trackId: string) => {
+    setEnrollingTrackId(trackId);
+    enrollMutation.mutate({ trackId });
+  };
+
+  const handleContinueLearning = (trackSlug: string) => {
+    router.push(`/paths/${trackSlug}/learn`);
+  };
 
   return (
     <MainLayout>
@@ -125,10 +159,7 @@ export default function CoursesPage() {
                       <CardContent>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
-                            <BookOpen className="h-4 w-4" />5 tracks
-                          </span>
-                          <span className="flex items-center gap-1">
-                            <Clock className="h-4 w-4" />40+ hours
+                            <BookOpen className="h-4 w-4" />Multiple tracks
                           </span>
                         </div>
                       </CardContent>
@@ -173,30 +204,21 @@ export default function CoursesPage() {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground mb-4">
                           <span className="flex items-center gap-1">
                             <Clock className="h-4 w-4" />
-                            {track.estimatedHours || 20}h
+                            {track.estimatedHours ? `${track.estimatedHours}h` : 'Self-paced'}
                           </span>
                           <span className="flex items-center gap-1">
                             <BookOpen className="h-4 w-4" />
-                            {track.totalCourses} courses
+                            {track.totalCourses} course{track.totalCourses !== 1 ? 's' : ''}
                           </span>
-                          <span className="flex items-center gap-1">
-                            <Users className="h-4 w-4" />
-                            1.2k enrolled
-                          </span>
+                          {track.enrollment && (
+                            <span className="flex items-center gap-1 text-emerald-600">
+                              <Users className="h-4 w-4" />
+                              Enrolled
+                            </span>
+                          )}
                         </div>
 
-                        {/* Progress bar if enrolled */}
-                        {track.enrollment && (
-                          <div className="mb-4">
-                            <div className="flex items-center justify-between text-sm mb-1">
-                              <span className="text-muted-foreground">Progress</span>
-                              <span className="font-medium">45%</span>
-                            </div>
-                            <div className="h-2 rounded-full bg-muted overflow-hidden">
-                              <div className="h-full w-[45%] gradient-brand rounded-full" />
-                            </div>
-                          </div>
-                        )}
+                        {/* Shows enrolled badge if user has enrolled - progress shown on detail page */}
 
                         <Button
                           className={cn(
@@ -205,8 +227,17 @@ export default function CoursesPage() {
                               ? 'gradient-brand text-white'
                               : 'bg-primary/10 text-primary hover:bg-primary/20'
                           )}
+                          onClick={() => track.enrollment
+                            ? handleContinueLearning(track.slug)
+                            : handleEnroll(track.id)
+                          }
+                          disabled={enrollingTrackId === track.id}
                         >
-                          {track.enrollment ? (
+                          {enrollingTrackId === track.id ? (
+                            <>
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enrolling...
+                            </>
+                          ) : track.enrollment ? (
                             <>
                               <Play className="mr-2 h-4 w-4" /> Continue Learning
                             </>
@@ -233,8 +264,32 @@ export default function CoursesPage() {
                     <CardContent className="p-6">
                       <h3 className="font-semibold text-lg">{track.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1">{track.description}</p>
-                      <Button className="w-full mt-4 gradient-brand text-white">
-                        Start Track
+                      <Button
+                        className={cn(
+                          'w-full mt-4',
+                          track.enrollment
+                            ? 'gradient-brand text-white'
+                            : 'bg-primary/10 text-primary hover:bg-primary/20'
+                        )}
+                        onClick={() => track.enrollment
+                          ? handleContinueLearning(track.slug)
+                          : handleEnroll(track.id)
+                        }
+                        disabled={enrollingTrackId === track.id}
+                      >
+                        {enrollingTrackId === track.id ? (
+                          <>
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" /> Enrolling...
+                          </>
+                        ) : track.enrollment ? (
+                          <>
+                            <Play className="mr-2 h-4 w-4" /> Continue Learning
+                          </>
+                        ) : (
+                          <>
+                            <BookOpen className="mr-2 h-4 w-4" /> Start Track
+                          </>
+                        )}
                       </Button>
                     </CardContent>
                   </Card>

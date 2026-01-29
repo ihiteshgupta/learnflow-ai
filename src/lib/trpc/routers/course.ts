@@ -203,4 +203,40 @@ export const courseRouter = router({
 
       return { success: true };
     }),
+
+  completeLesson: protectedProcedure
+    .input(z.object({ lessonId: z.string().uuid() }))
+    .mutation(async ({ ctx, input }) => {
+      // Update or insert progress record
+      const existing = await ctx.db.query.progress.findFirst({
+        where: and(
+          eq(progress.userId, ctx.user.id),
+          eq(progress.lessonId, input.lessonId)
+        ),
+      });
+
+      if (existing && existing.status === 'completed') {
+        return { success: true, alreadyCompleted: true };
+      }
+
+      if (existing) {
+        await ctx.db
+          .update(progress)
+          .set({
+            status: 'completed',
+            completedAt: new Date(),
+            updatedAt: new Date(),
+          })
+          .where(eq(progress.id, existing.id));
+      } else {
+        await ctx.db.insert(progress).values({
+          userId: ctx.user.id,
+          lessonId: input.lessonId,
+          status: 'completed',
+          completedAt: new Date(),
+        });
+      }
+
+      return { success: true, alreadyCompleted: false };
+    }),
 });

@@ -180,10 +180,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">{(profile?.totalXp || 0).toLocaleString()}</div>
-              <div className="flex items-center gap-1 mt-1">
-                <TrendingUp className="h-3 w-3 text-emerald" />
-                <span className="text-xs text-emerald font-medium">+250 this week</span>
-              </div>
+              <p className="text-xs text-muted-foreground mt-1">Lifetime total</p>
             </CardContent>
           </Card>
 
@@ -301,7 +298,7 @@ export default function Dashboard() {
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
                         <Clock className="h-4 w-4" />
-                        <span>20+ hours</span>
+                        <span>Self-paced</span>
                       </div>
                       <Button className="btn-shine gradient-brand text-white border-0">
                         Start Learning
