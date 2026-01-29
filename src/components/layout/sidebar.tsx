@@ -8,6 +8,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   LayoutDashboard,
   BookOpen,
+  Route,
   Trophy,
   BarChart3,
   Award,
@@ -19,6 +20,7 @@ import {
 const sidebarItems = [
   { href: '/', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/courses', label: 'Courses', icon: BookOpen },
+  { href: '/paths', label: 'Learning Paths', icon: Route },
   { href: '/achievements', label: 'Achievements', icon: Trophy },
   { href: '/certifications', label: 'Certifications', icon: Award },
   { href: '/analytics', label: 'Analytics', icon: BarChart3 },

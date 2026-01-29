@@ -1,11 +1,14 @@
 'use client';
 
+import Link from 'next/link';
 import { trpc } from '@/lib/trpc/client';
 import { MainLayout } from '@/components/layout';
 import { XPDisplay, StreakDisplay, LevelProgress } from '@/components/gamification';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { Progress } from '@/components/ui/progress';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   BookOpen,
   Brain,
@@ -17,6 +20,8 @@ import {
   TrendingUp,
   Clock,
   Sparkles,
+  Play,
+  GraduationCap,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -24,6 +29,7 @@ export default function Dashboard() {
   const { data: domains, isLoading: domainsLoading } = trpc.course.getDomains.useQuery();
   const { data: profile } = trpc.gamification.getProfile.useQuery();
   const { data: achievements } = trpc.gamification.getAchievements.useQuery();
+  const { data: courseProgress, isLoading: progressLoading } = trpc.analytics.getCourseProgress.useQuery();
 
   const domainIcons: Record<string, React.ReactNode> = {
     python: <Code className="h-6 w-6" />,
@@ -62,6 +68,83 @@ export default function Dashboard() {
             )}
           </div>
         </div>
+
+        {/* Continue Learning Section */}
+        {progressLoading ? (
+          <Card className="border-0 shadow-md">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <Play className="h-5 w-5 text-primary" />
+                <Skeleton className="h-6 w-40" />
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {[1, 2, 3].map((i) => (
+                  <Skeleton key={i} className="h-24 w-full rounded-lg" />
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : courseProgress && courseProgress.filter(c => !c.isCompleted).length > 0 ? (
+          <Card className="border-0 shadow-md overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-1 gradient-brand" />
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <Play className="h-5 w-5 text-primary" />
+                  <CardTitle>Continue Learning</CardTitle>
+                </div>
+                <Link href="/courses">
+                  <Button variant="ghost" size="sm" className="text-primary">
+                    View all courses <ChevronRight className="ml-1 h-4 w-4" />
+                  </Button>
+                </Link>
+              </div>
+              <CardDescription>Pick up where you left off</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                {courseProgress
+                  .filter(c => !c.isCompleted)
+                  .slice(0, 3)
+                  .map((course) => (
+                    <div
+                      key={course.courseId}
+                      className="group p-4 rounded-lg border bg-card hover:shadow-md transition-all cursor-pointer"
+                    >
+                      <div className="flex items-start justify-between mb-3">
+                        <div className="flex items-center gap-3">
+                          <div className="p-2 rounded-lg bg-primary/10">
+                            <GraduationCap className="h-5 w-5 text-primary" />
+                          </div>
+                          <div>
+                            <h4 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors">
+                              {course.courseName}
+                            </h4>
+                            <p className="text-xs text-muted-foreground">
+                              {course.completedLessons} / {course.totalLessons} lessons
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                        <Progress value={course.progress} className="h-2" />
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-muted-foreground">
+                            {course.progress}% complete
+                          </span>
+                          <Button size="sm" className="h-7 text-xs gradient-brand text-white">
+                            Continue
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+              </div>
+            </CardContent>
+          </Card>
+        ) : null}
 
         {/* Stats Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">

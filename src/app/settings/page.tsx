@@ -1,6 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { trpc } from '@/lib/trpc/client';
 import { MainLayout } from '@/components/layout';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -8,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { useToast } from '@/hooks/use-toast';
 import {
   User,
   Bell,
@@ -20,19 +23,100 @@ import {
   Sun,
   Save,
   Camera,
+  Loader2,
+  Trophy,
+  Flame,
+  BookOpen,
+  Users,
+  Building2,
+  AlertCircle,
 } from 'lucide-react';
+import { NOTIFICATION_TYPES } from '@/lib/db/schema';
+
+const NOTIFICATION_TYPE_CONFIG: Record<string, { icon: typeof Trophy; label: string; description: string }> = {
+  achievement_unlocked: { icon: Trophy, label: 'Achievement Unlocked', description: 'When you earn a new achievement' },
+  streak_milestone: { icon: Flame, label: 'Streak Milestones', description: 'When you reach streak milestones' },
+  course_completed: { icon: BookOpen, label: 'Course Completed', description: 'When you complete a course' },
+  certificate_earned: { icon: Trophy, label: 'Certificate Earned', description: 'When you earn a certificate' },
+  lesson_reminder: { icon: BookOpen, label: 'Lesson Reminders', description: 'Daily reminders to continue learning' },
+  team_update: { icon: Users, label: 'Team Updates', description: 'Updates from your team' },
+  org_announcement: { icon: Building2, label: 'Organization Announcements', description: 'Announcements from your organization' },
+  admin_alert: { icon: AlertCircle, label: 'Admin Alerts', description: 'Important system alerts' },
+  system_message: { icon: Bell, label: 'System Messages', description: 'General system notifications' },
+};
 
 export default function SettingsPage() {
-  const [notifications, setNotifications] = useState({
-    email: true,
-    push: true,
-    streakReminders: true,
-    weeklyProgress: true,
-    newCourses: false,
-    achievements: true,
+  const { data: session } = useSession();
+  const { toast } = useToast();
+  const utils = trpc.useUtils();
+
+  // Form state for profile
+  const [profile, setProfile] = useState({
+    name: '',
+    email: '',
+    bio: '',
   });
 
+  // Theme state
   const [theme, setTheme] = useState<'light' | 'dark' | 'system'>('system');
+
+  // Fetch notification preferences
+  const { data: notificationPrefs, isLoading: prefsLoading } = trpc.notifications.getPreferences.useQuery();
+
+  // Mutations
+  const updateProfileMutation = trpc.user.updateProfile.useMutation({
+    onSuccess: () => {
+      toast({ title: 'Profile updated', description: 'Your profile has been saved successfully.' });
+      utils.user.getProfile.invalidate();
+    },
+    onError: (error) => {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    },
+  });
+
+  const updatePrefsMutation = trpc.notifications.updatePreferences.useMutation({
+    onSuccess: () => {
+      toast({ title: 'Preferences updated', description: 'Your notification preferences have been saved.' });
+      utils.notifications.getPreferences.invalidate();
+    },
+    onError: (error) => {
+      toast({ title: 'Error', description: error.message, variant: 'destructive' });
+    },
+  });
+
+  // Initialize profile from session
+  useEffect(() => {
+    if (session?.user) {
+      setProfile({
+        name: session.user.name ?? '',
+        email: session.user.email ?? '',
+        bio: '',
+      });
+    }
+  }, [session]);
+
+  const handleSaveProfile = () => {
+    updateProfileMutation.mutate({
+      name: profile.name,
+    });
+  };
+
+  const handleToggleNotification = (type: string, channel: 'inApp' | 'email' | 'push', value: boolean) => {
+    updatePrefsMutation.mutate({
+      type: type as typeof NOTIFICATION_TYPES[number],
+      [channel]: value,
+    });
+  };
+
+  // Get initials for avatar
+  const getInitials = (name: string) => {
+    return name
+      .split(' ')
+      .map(n => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
 
   return (
     <MainLayout>
@@ -81,7 +165,7 @@ export default function SettingsPage() {
                 <div className="flex items-center gap-6">
                   <div className="relative">
                     <div className="h-24 w-24 rounded-full gradient-brand flex items-center justify-center text-white text-2xl font-bold">
-                      JD
+                      {getInitials(profile.name || 'U')}
                     </div>
                     <Button
                       size="icon"
@@ -101,20 +185,24 @@ export default function SettingsPage() {
 
                 <div className="grid gap-4 md:grid-cols-2">
                   <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" placeholder="John" defaultValue="John" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" placeholder="Doe" defaultValue="Doe" />
+                    <Label htmlFor="name">Full Name</Label>
+                    <Input
+                      id="name"
+                      value={profile.name}
+                      onChange={(e) => setProfile({ ...profile, name: e.target.value })}
+                      placeholder="Your name"
+                    />
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" placeholder="john@example.com" defaultValue="john@example.com" />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="username">Username</Label>
-                    <Input id="username" placeholder="johndoe" defaultValue="johndoe" />
+                    <Input
+                      id="email"
+                      type="email"
+                      value={profile.email}
+                      disabled
+                      className="bg-muted"
+                    />
+                    <p className="text-xs text-muted-foreground">Email cannot be changed</p>
                   </div>
                 </div>
 
@@ -124,12 +212,22 @@ export default function SettingsPage() {
                     id="bio"
                     className="w-full min-h-[100px] rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
                     placeholder="Tell us about yourself..."
-                    defaultValue="Passionate learner on a journey to master data science and machine learning."
+                    value={profile.bio}
+                    onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   />
                 </div>
 
-                <Button className="gradient-brand text-white">
-                  <Save className="h-4 w-4 mr-2" /> Save Changes
+                <Button
+                  className="gradient-brand text-white"
+                  onClick={handleSaveProfile}
+                  disabled={updateProfileMutation.isPending}
+                >
+                  {updateProfileMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-2" />
+                  )}
+                  Save Changes
                 </Button>
               </CardContent>
             </Card>
@@ -141,112 +239,69 @@ export default function SettingsPage() {
               <CardHeader>
                 <CardTitle>Notification Preferences</CardTitle>
                 <CardDescription>
-                  Choose what notifications you want to receive
+                  Choose what notifications you want to receive and how
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Mail className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Email Notifications</p>
-                        <p className="text-sm text-muted-foreground">
-                          Receive updates via email
-                        </p>
+                {prefsLoading ? (
+                  <div className="flex items-center justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : (
+                  <div className="space-y-6">
+                    {/* Channel Headers */}
+                    <div className="grid grid-cols-[1fr,80px,80px,80px] gap-4 items-center pb-2 border-b">
+                      <div className="font-medium">Notification Type</div>
+                      <div className="text-center text-sm font-medium text-muted-foreground">In-App</div>
+                      <div className="text-center text-sm font-medium text-muted-foreground">
+                        <Mail className="h-4 w-4 mx-auto" />
+                      </div>
+                      <div className="text-center text-sm font-medium text-muted-foreground">
+                        <Smartphone className="h-4 w-4 mx-auto" />
                       </div>
                     </div>
-                    <Switch
-                      checked={notifications.email}
-                      onCheckedChange={(checked) =>
-                        setNotifications({ ...notifications, email: checked })
-                      }
-                    />
+
+                    {/* Notification Types */}
+                    {notificationPrefs?.map((pref) => {
+                      const config = NOTIFICATION_TYPE_CONFIG[pref.type];
+                      if (!config) return null;
+                      const Icon = config.icon;
+
+                      return (
+                        <div key={pref.type} className="grid grid-cols-[1fr,80px,80px,80px] gap-4 items-center">
+                          <div className="flex items-center gap-3">
+                            <Icon className="h-5 w-5 text-muted-foreground shrink-0" />
+                            <div>
+                              <p className="font-medium text-sm">{config.label}</p>
+                              <p className="text-xs text-muted-foreground">{config.description}</p>
+                            </div>
+                          </div>
+                          <div className="flex justify-center">
+                            <Switch
+                              checked={pref.inApp}
+                              onCheckedChange={(checked) => handleToggleNotification(pref.type, 'inApp', checked)}
+                              disabled={updatePrefsMutation.isPending}
+                            />
+                          </div>
+                          <div className="flex justify-center">
+                            <Switch
+                              checked={pref.email}
+                              onCheckedChange={(checked) => handleToggleNotification(pref.type, 'email', checked)}
+                              disabled={updatePrefsMutation.isPending}
+                            />
+                          </div>
+                          <div className="flex justify-center">
+                            <Switch
+                              checked={pref.push}
+                              onCheckedChange={(checked) => handleToggleNotification(pref.type, 'push', checked)}
+                              disabled={updatePrefsMutation.isPending}
+                            />
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
-                      <Smartphone className="h-5 w-5 text-muted-foreground" />
-                      <div>
-                        <p className="font-medium">Push Notifications</p>
-                        <p className="text-sm text-muted-foreground">
-                          Receive push notifications on your device
-                        </p>
-                      </div>
-                    </div>
-                    <Switch
-                      checked={notifications.push}
-                      onCheckedChange={(checked) =>
-                        setNotifications({ ...notifications, push: checked })
-                      }
-                    />
-                  </div>
-
-                  <div className="border-t pt-4">
-                    <h4 className="font-medium mb-4">Notification Types</h4>
-                    <div className="space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Streak Reminders</p>
-                          <p className="text-sm text-muted-foreground">
-                            Get reminded to maintain your learning streak
-                          </p>
-                        </div>
-                        <Switch
-                          checked={notifications.streakReminders}
-                          onCheckedChange={(checked) =>
-                            setNotifications({ ...notifications, streakReminders: checked })
-                          }
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Weekly Progress</p>
-                          <p className="text-sm text-muted-foreground">
-                            Weekly summary of your learning progress
-                          </p>
-                        </div>
-                        <Switch
-                          checked={notifications.weeklyProgress}
-                          onCheckedChange={(checked) =>
-                            setNotifications({ ...notifications, weeklyProgress: checked })
-                          }
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">Achievement Unlocked</p>
-                          <p className="text-sm text-muted-foreground">
-                            Notifications when you earn achievements
-                          </p>
-                        </div>
-                        <Switch
-                          checked={notifications.achievements}
-                          onCheckedChange={(checked) =>
-                            setNotifications({ ...notifications, achievements: checked })
-                          }
-                        />
-                      </div>
-
-                      <div className="flex items-center justify-between">
-                        <div>
-                          <p className="font-medium">New Courses</p>
-                          <p className="text-sm text-muted-foreground">
-                            Be notified when new courses are available
-                          </p>
-                        </div>
-                        <Switch
-                          checked={notifications.newCourses}
-                          onCheckedChange={(checked) =>
-                            setNotifications({ ...notifications, newCourses: checked })
-                          }
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                )}
               </CardContent>
             </Card>
           </TabsContent>
