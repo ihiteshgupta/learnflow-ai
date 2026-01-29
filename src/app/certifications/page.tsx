@@ -86,12 +86,12 @@ export default function CertificationsPage() {
   const handleLinkedInShare = (cert: {
     course?: { name?: string } | null;
     credentialId: string;
-    issuedAt: Date;
+    issuedAt: Date | null;
   }) => {
     const url = generateLinkedInShareUrl({
       courseName: cert.course?.name || 'Course',
       credentialId: cert.credentialId,
-      issuedAt: new Date(cert.issuedAt),
+      issuedAt: cert.issuedAt ? new Date(cert.issuedAt) : new Date(),
     });
     window.open(url, '_blank', 'width=600,height=400');
   };
@@ -251,7 +251,7 @@ export default function CertificationsPage() {
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-4 w-4" />
-                                {new Date(cert.issuedAt).toLocaleDateString()}
+                                {cert.issuedAt ? new Date(cert.issuedAt).toLocaleDateString() : 'N/A'}
                               </span>
                               <span className="flex items-center gap-1">
                                 <CheckCircle2 className="h-4 w-4 text-emerald-500" />

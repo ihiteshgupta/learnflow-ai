@@ -70,7 +70,7 @@ export async function GET(
       courseName: certification.course?.name || 'Course',
       tier: certification.tier as 'bronze' | 'silver' | 'gold',
       credentialId: certification.credentialId,
-      issuedAt: certification.issuedAt,
+      issuedAt: certification.issuedAt || new Date(),
       skills: certification.metadata?.skills,
       examScore: examScore ? parseFloat(examScore) : undefined,
       projectDescription: certification.metadata?.projectDescription,

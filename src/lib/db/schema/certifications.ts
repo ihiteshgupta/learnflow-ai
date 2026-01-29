@@ -9,11 +9,15 @@ export const certifications = pgTable('certifications', {
   courseId: uuid('course_id').notNull(),
   tier: varchar('tier', { length: 10 }).notNull(),
   credentialId: varchar('credential_id', { length: 50 }).notNull().unique(),
-  issuedAt: timestamp('issued_at').defaultNow().notNull(),
+  status: varchar('status', { length: 20 }).notNull().default('active'), // pending, active, revoked, rejected
+  issuedAt: timestamp('issued_at'),
   expiresAt: timestamp('expires_at'),
   projectUrl: varchar('project_url', { length: 500 }),
   projectRepo: varchar('project_repo', { length: 500 }),
+  reviewedBy: uuid('reviewed_by'),
+  reviewFeedback: text('review_feedback'),
   metadata: jsonb('metadata').$type<CertMetadata>(),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 
 export const assessments = pgTable('assessments', {

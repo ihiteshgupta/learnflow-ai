@@ -93,11 +93,11 @@ export default function VerifyPage() {
   }
 
   const styles = tierStyles[data.tier as keyof typeof tierStyles] || tierStyles.bronze;
-  const formattedDate = new Date(data.issuedAt).toLocaleDateString('en-US', {
+  const formattedDate = data.issuedAt ? new Date(data.issuedAt).toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
     day: 'numeric',
-  });
+  }) : 'Pending';
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 py-12 px-4">
