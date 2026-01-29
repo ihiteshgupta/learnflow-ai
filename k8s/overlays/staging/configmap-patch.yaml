@@ -4,7 +4,7 @@ metadata:
   name: learnflow-config
 data:
   NODE_ENV: "staging"
-  NEXT_PUBLIC_APP_URL: "https://staging.learnflow.ai"
+  NEXT_PUBLIC_APP_URL: "https://www.dronacharya.app"
   ENABLE_GAMIFICATION: "true"
   ENABLE_AI_PROCTORING: "false"
   MAX_AI_REQUESTS_PER_MINUTE: "60"

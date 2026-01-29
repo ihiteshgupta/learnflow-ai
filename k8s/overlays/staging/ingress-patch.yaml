@@ -8,10 +8,21 @@ spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - staging.learnflow.ai
-      secretName: staging-tls-secret
+        - dronacharya.app
+        - www.dronacharya.app
+      secretName: dronacharya-tls-secret
   rules:
-    - host: staging.learnflow.ai
+    - host: dronacharya.app
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: staging-learnflow-web
+                port:
+                  number: 80
+    - host: www.dronacharya.app
       http:
         paths:
           - path: /
