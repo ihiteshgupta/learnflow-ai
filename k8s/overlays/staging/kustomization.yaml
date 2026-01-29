@@ -40,9 +40,11 @@ patches:
       name: learnflow-config
     path: configmap-patch.yaml
 
-# Staging image tags
+# Staging image tags - Azure Container Registry
 images:
   - name: learnflow/web
+    newName: learnflowacr.azurecr.io/learnflow/web
     newTag: staging
   - name: learnflow/ai-service
+    newName: learnflowacr.azurecr.io/learnflow/ai-service
     newTag: staging

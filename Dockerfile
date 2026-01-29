@@ -3,8 +3,11 @@ FROM node:20-alpine AS deps
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
+# Install pnpm globally instead of using corepack (avoids network issues)
+RUN npm install -g pnpm@10
+
 COPY package.json pnpm-lock.yaml ./
-RUN corepack enable pnpm && pnpm install --frozen-lockfile
+RUN pnpm install --frozen-lockfile
 
 # Stage 2: Builder
 FROM node:20-alpine AS builder
@@ -16,7 +19,7 @@ COPY . .
 ENV NEXT_TELEMETRY_DISABLED 1
 ENV NODE_ENV production
 
-RUN corepack enable pnpm && pnpm build
+RUN npm install -g pnpm@10 && pnpm build
 
 # Stage 3: Runner
 FROM node:20-alpine AS runner
