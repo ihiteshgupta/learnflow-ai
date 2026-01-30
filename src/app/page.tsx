@@ -22,19 +22,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface Achievement {
-  id: string;
-  name: string;
-  earned: boolean;
-}
-
-interface Domain {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-}
-
 export default function Dashboard() {
   const { isComplete: onboardingComplete } = useOnboardingStore();
   const { data: domains, isLoading: domainsLoading } = trpc.course.getDomains.useQuery();
@@ -147,7 +134,7 @@ export default function Dashboard() {
             </CardHeader>
             <CardContent>
               <div className="text-3xl font-bold">
-                {achievements?.filter((a: Achievement) => a.earned).length || 0}
+                {achievements?.filter((a) => a.earned).length || 0}
                 <span className="text-lg font-normal text-muted-foreground">
                   {' / '}{achievements?.length || 0}
                 </span>
@@ -206,7 +193,7 @@ export default function Dashboard() {
             </div>
           ) : (
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-              {domains?.map((domain: Domain) => (
+              {domains?.map((domain) => (
                 <Card
                   key={domain.id}
                   className="card-hover cursor-pointer group border-0 shadow-md overflow-hidden"
@@ -260,7 +247,7 @@ export default function Dashboard() {
               </Button>
             </div>
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-              {achievements.slice(0, 4).map((achievement: Achievement) => (
+              {achievements.slice(0, 4).map((achievement) => (
                 <Card
                   key={achievement.id}
                   className={cn(

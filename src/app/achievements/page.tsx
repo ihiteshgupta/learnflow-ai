@@ -19,17 +19,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface Achievement {
-  id: string;
-  name: string;
-  description: string;
-  category: string;
-  xpReward: number;
-  rarity?: string;
-  earned: boolean;
-  earnedAt?: string;
-}
-
 const achievementCategories = [
   { id: 'all', label: 'All', icon: Trophy },
   { id: 'learning', label: 'Learning', icon: BookOpen },
@@ -49,7 +38,7 @@ export default function AchievementsPage() {
   const { data: achievements, isLoading } = trpc.gamification.getAchievements.useQuery();
   const { data: profile } = trpc.gamification.getProfile.useQuery();
 
-  const earnedCount = achievements?.filter((a: Achievement) => a.earned).length || 0;
+  const earnedCount = achievements?.filter((a) => a.earned).length || 0;
   const totalCount = achievements?.length || 0;
   const progressPercentage = totalCount > 0 ? (earnedCount / totalCount) * 100 : 0;
 
@@ -165,7 +154,7 @@ export default function AchievementsPage() {
                   </Card>
                 ))
               ) : (
-                achievements?.map((achievement: Achievement) => (
+                achievements?.map((achievement) => (
                   <Card
                     key={achievement.id}
                     className={cn(

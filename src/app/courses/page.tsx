@@ -21,24 +21,6 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-interface Domain {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-}
-
-interface Track {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  difficulty: string;
-  estimatedHours?: number;
-  totalCourses: number;
-  enrollment?: boolean;
-}
-
 const domainIcons: Record<string, React.ReactNode> = {
   python: <Code className="h-5 w-5" />,
   'data-science': <Brain className="h-5 w-5" />,
@@ -93,7 +75,7 @@ export default function CoursesPage() {
             <TabsTrigger value="all" onClick={() => setSelectedDomain(null)}>
               All Domains
             </TabsTrigger>
-            {domains?.map((domain: Domain) => (
+            {domains?.map((domain) => (
               <TabsTrigger
                 key={domain.id}
                 value={domain.slug}
@@ -121,7 +103,7 @@ export default function CoursesPage() {
                     </Card>
                   ))
                 ) : (
-                  domains?.map((domain: Domain) => (
+                  domains?.map((domain) => (
                     <Card
                       key={domain.id}
                       className="card-hover cursor-pointer group border-0 shadow-md"
@@ -173,7 +155,7 @@ export default function CoursesPage() {
                     </Card>
                   ))
                 ) : (
-                  tracks?.map((track: Track) => (
+                  tracks?.map((track) => (
                     <Card key={track.id} className="card-hover border-0 shadow-md overflow-hidden">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-3">
@@ -243,10 +225,10 @@ export default function CoursesPage() {
           </TabsContent>
 
           {/* Individual domain tabs - show same content but filtered */}
-          {domains?.map((domain: Domain) => (
+          {domains?.map((domain) => (
             <TabsContent key={domain.id} value={domain.slug}>
               <div className="grid gap-4 md:grid-cols-2">
-                {tracks?.map((track: Track) => (
+                {tracks?.map((track) => (
                   <Card key={track.id} className="card-hover border-0 shadow-md">
                     <CardContent className="p-6">
                       <h3 className="font-semibold text-lg">{track.name}</h3>
