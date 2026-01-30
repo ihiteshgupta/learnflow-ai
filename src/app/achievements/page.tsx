@@ -182,7 +182,7 @@ export default function AchievementsPage() {
                         <div className={cn(
                           'relative p-4 rounded-xl',
                           achievement.earned
-                            ? `bg-gradient-to-br ${rarityColors[achievement.rarity] || rarityColors.common}`
+                            ? `bg-gradient-to-br ${rarityColors[achievement.rarity ?? 'common'] || rarityColors.common}`
                             : 'bg-muted'
                         )}>
                           <Trophy className={cn(
