@@ -1,6 +1,7 @@
 import { HumanMessage, AIMessage } from '@langchain/core/messages';
+import { eq, and } from 'drizzle-orm';
 import { chat } from '@/lib/ai/orchestrator';
-import { db } from '@/lib/db';
+import { db, users, userProfiles, lessons, aiSessions, aiMessages } from '@/lib/db';
 import type { TeachingMode } from '@/lib/ai/types';
 
 export const runtime = 'nodejs';
@@ -18,11 +19,11 @@ export async function POST(req: Request) {
 
     // Get user profile
     const user = await db.query.users.findFirst({
-      where: { id: userId },
+      where: eq(users.id, userId),
     });
 
     const profile = await db.query.userProfiles.findFirst({
-      where: { userId },
+      where: eq(userProfiles.userId, userId),
     });
 
     if (!user) {
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
 
     if (lessonId) {
       const lesson = await db.query.lessons.findFirst({
-        where: { id: lessonId },
+        where: eq(lessons.id, lessonId),
         with: {
           module: {
             with: {
@@ -73,17 +74,17 @@ export async function POST(req: Request) {
 
     // Get or create AI session
     const session = await db.query.aiSessions.findFirst({
-      where: {
-        userId,
-        lessonId: lessonId || '',
-        status: 'active',
-      },
+      where: and(
+        eq(aiSessions.userId, userId),
+        eq(aiSessions.lessonId, lessonId || ''),
+        eq(aiSessions.status, 'active')
+      ),
     });
 
     const sessionId = session?.id || crypto.randomUUID();
 
     if (!session) {
-      await db.insert('aiSessions').values({
+      await db.insert(aiSessions).values({
         id: sessionId,
         userId,
         lessonId: lessonId || null,
@@ -93,7 +94,7 @@ export async function POST(req: Request) {
     }
 
     // Save user message
-    await db.insert('aiMessages').values({
+    await db.insert(aiMessages).values({
       sessionId,
       role: 'user',
       content: userMessage,
@@ -115,7 +116,7 @@ export async function POST(req: Request) {
     });
 
     // Save AI response
-    await db.insert('aiMessages').values({
+    await db.insert(aiMessages).values({
       sessionId,
       role: 'assistant',
       content: result.response,
