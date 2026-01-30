@@ -40,31 +40,31 @@ Time Available: {timeAvailable}
 Generate a comprehensive project plan with milestones and tasks.
 
 Respond with JSON:
-{
+{{
   "overview": "Brief project description",
   "techStack": ["Recommended technologies"],
   "milestones": [
-    {
+    {{
       "name": "Milestone 1: Setup",
       "description": "What will be accomplished",
       "estimatedDays": 3,
       "tasks": [
-        { "name": "Task name", "description": "What to do", "skills": ["skills used"] }
+        {{ "name": "Task name", "description": "What to do", "skills": ["skills used"] }}
       ],
       "deliverables": ["What to submit"],
       "checkpoints": ["How progress is verified"]
-    }
+    }}
   ],
-  "evaluationCriteria": {
+  "evaluationCriteria": {{
     "codeQuality": "What makes good code quality",
     "functionality": "Required features",
     "testing": "Testing requirements",
     "documentation": "Documentation requirements",
     "deployment": "Deployment requirements"
-  },
+  }},
   "resources": ["Helpful links/docs"],
   "tips": ["Advice for success"]
-}`;
+}}`;
 
 export const ARCHITECTURE_REVIEW_PROMPT = `Review this project architecture:
 Project: {projectName}
@@ -79,7 +79,7 @@ File Structure:
 Evaluate the architecture and provide guidance.
 
 Respond with JSON:
-{
+{{
   "score": 75,
   "strengths": ["What's good about this architecture"],
   "concerns": ["Potential issues to consider"],
@@ -88,7 +88,7 @@ Respond with JSON:
   "patterns": ["Design patterns that could help"],
   "scalabilityNotes": "How this would scale",
   "maintainabilityNotes": "How maintainable this is"
-}`;
+}}`;
 
 export const MILESTONE_REVIEW_PROMPT = `Review milestone submission:
 Project: {projectName}
@@ -101,17 +101,17 @@ Submitted Code/Description:
 Evaluate the milestone completion.
 
 Respond with JSON:
-{
+{{
   "status": "approved|needs_work|in_progress",
   "completionPercentage": 80,
-  "feedback": {
+  "feedback": {{
     "completed": ["What's done well"],
     "missing": ["What's still needed"],
     "improvements": ["Optional improvements"]
-  },
+  }},
   "nextSteps": ["What to do next"],
   "encouragement": "Motivational feedback"
-}`;
+}}`;
 
 export const DEBUGGING_GUIDE_PROMPT = `Help debug this issue without giving the solution:
 Project: {projectName}
@@ -126,14 +126,14 @@ What the student has tried:
 Guide the student through debugging.
 
 Respond with JSON:
-{
+{{
   "problemAnalysis": "Understanding of the issue",
   "investigationQuestions": ["Questions to help student discover the problem"],
   "debuggingSteps": ["Steps to investigate"],
   "hints": ["Subtle hints that guide without revealing"],
   "conceptsToReview": ["Related concepts that might help"],
   "commonMistakes": ["Common mistakes in this area"]
-}`;
+}}`;
 
 export const DEPLOYMENT_GUIDE_PROMPT = `Create deployment guidance:
 Project: {projectName}
@@ -146,9 +146,9 @@ Current Status:
 Provide deployment guidance.
 
 Respond with JSON:
-{
+{{
   "checklist": [
-    { "item": "Task name", "description": "What to do", "priority": "required|recommended|optional" }
+    {{ "item": "Task name", "description": "What to do", "priority": "required|recommended|optional" }}
   ],
   "environmentVariables": ["ENV vars needed (without values)"],
   "cicdSuggestions": ["CI/CD pipeline recommendations"],
@@ -156,4 +156,4 @@ Respond with JSON:
   "monitoringSuggestions": ["What to monitor"],
   "commonIssues": ["Issues to watch for"],
   "resources": ["Helpful deployment guides"]
-}`;
+}}`;

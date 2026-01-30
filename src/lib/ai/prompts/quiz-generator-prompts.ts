@@ -25,12 +25,12 @@ Focus Areas: {focusAreas}
 Create a quiz with varied question types that test understanding of the material.
 
 Respond with JSON:
-{
+{{
   "title": "Quiz title",
   "description": "Brief description",
   "estimatedMinutes": 10,
   "questions": [
-    {
+    {{
       "id": "q1",
       "type": "multiple_choice|code_output|fill_blank|true_false|short_answer",
       "difficulty": 1-10,
@@ -43,11 +43,11 @@ Respond with JSON:
       "points": 10,
       "bloomLevel": "remember|understand|apply|analyze",
       "conceptsTested": ["concept1", "concept2"]
-    }
+    }}
   ],
   "passingScore": 70,
   "totalPoints": 100
-}`;
+}}`;
 
 export const ADAPTIVE_QUESTION_PROMPT = `Generate an adaptive follow-up question based on student performance:
 
@@ -61,8 +61,8 @@ If correct: Generate a slightly harder question on the same or related concept.
 If incorrect: Generate an easier question that reinforces the fundamental concept.
 
 Respond with JSON:
-{
-  "question": {
+{{
+  "question": {{
     "type": "multiple_choice|code_output|fill_blank|true_false|short_answer",
     "difficulty": 1-10,
     "question": "Question text",
@@ -73,9 +73,9 @@ Respond with JSON:
     "hint": "Hint",
     "points": 10,
     "conceptsTested": ["concepts"]
-  },
+  }},
   "rationale": "Why this question was chosen as follow-up"
-}`;
+}}`;
 
 export const ANALYZE_QUIZ_RESULTS_PROMPT = `Analyze quiz results and provide feedback:
 
@@ -89,20 +89,20 @@ Time Taken: {timeTaken} minutes
 Provide comprehensive analysis.
 
 Respond with JSON:
-{
+{{
   "overallAssessment": "Summary of performance",
   "strengthAreas": ["Topics mastered"],
   "weakAreas": ["Topics needing work"],
-  "conceptMastery": {
-    "concept1": { "score": 80, "status": "mastered|developing|needs_work" }
-  },
+  "conceptMastery": {{
+    "concept1": {{ "score": 80, "status": "mastered|developing|needs_work" }}
+  }},
   "recommendations": [
-    { "type": "review|practice|advance", "topic": "Topic", "reason": "Why" }
+    {{ "type": "review|practice|advance", "topic": "Topic", "reason": "Why" }}
   ],
   "nextSteps": ["Specific actions to take"],
   "encouragement": "Motivational feedback",
   "suggestedRetakeIn": "When to retake if applicable"
-}`;
+}}`;
 
 export const GENERATE_PRACTICE_SET_PROMPT = `Generate a practice question set for areas needing improvement:
 
@@ -113,11 +113,11 @@ Course Content: {content}
 Create 5 practice questions focusing on weak areas, starting easier and building up.
 
 Respond with JSON:
-{
+{{
   "practiceSetTitle": "Practice: Weak Area Name",
   "targetConcepts": ["concepts being practiced"],
   "questions": [
-    {
+    {{
       "id": "p1",
       "type": "multiple_choice",
       "difficulty": 1-10,
@@ -128,7 +128,7 @@ Respond with JSON:
       "hint": "Hint",
       "points": 10,
       "relatedConcept": "specific concept"
-    }
+    }}
   ],
   "learningTips": ["Tips for understanding these concepts"]
-}`;
+}}`;

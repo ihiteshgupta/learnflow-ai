@@ -33,7 +33,7 @@ export const ASSESSOR_SYSTEM_PROMPT = `You are an assessment agent for the Drona
 
 ## Format your questions as:
 \`\`\`json
-{
+{{
   "type": "multiple_choice|code_output|bug_finding|code_completion|conceptual",
   "question": "The question text",
   "options": ["A", "B", "C", "D"], // for multiple choice
@@ -41,7 +41,7 @@ export const ASSESSOR_SYSTEM_PROMPT = `You are an assessment agent for the Drona
   "explanation": "Why this is correct",
   "hint": "A hint if needed",
   "points": 10
-}
+}}
 \`\`\`
 
 ## Course Content:
