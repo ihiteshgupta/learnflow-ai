@@ -17,7 +17,6 @@ import {
   Target,
   Zap,
   TrendingUp,
-  Clock,
   Sparkles,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
@@ -225,8 +224,8 @@ export default function Dashboard() {
                   <CardContent>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <Clock className="h-4 w-4" />
-                        <span>20+ hours</span>
+                        <BookOpen className="h-4 w-4" />
+                        <span>Multiple tracks</span>
                       </div>
                       <Button className="btn-shine gradient-brand text-white border-0">
                         Start Learning
