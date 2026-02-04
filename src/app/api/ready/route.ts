@@ -1,24 +1,26 @@
 import { NextResponse } from 'next/server';
+import { db } from '@/lib/db';
+import { sql } from 'drizzle-orm';
 
 export const dynamic = 'force-dynamic';
 
 // Readiness probe - checks if the app is ready to serve traffic
 export async function GET() {
-  const checks: Record<string, boolean> = {
-    app: true,
+  const checks: Record<string, string> = {
+    app: 'ok',
   };
 
-  // Check database connectivity if DATABASE_URL is configured
+  // Check database connectivity
   if (process.env.DATABASE_URL && process.env.DATABASE_URL !== 'mock') {
     try {
-      // Simple check - in production would do actual DB ping
-      checks.database = true;
+      await db.execute(sql`SELECT 1`);
+      checks.database = 'ok';
     } catch {
-      checks.database = false;
+      checks.database = 'failed';
     }
   }
 
-  const allHealthy = Object.values(checks).every(Boolean);
+  const allHealthy = Object.values(checks).every((v) => v === 'ok');
 
   return NextResponse.json(
     {
