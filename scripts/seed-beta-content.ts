@@ -454,6 +454,58 @@ print(greeting)`,
     },
   },
 
+  {
+    moduleSlug: 'understanding-variables-variables-data-types',
+    name: 'Quiz: Understanding Variables',
+    type: 'quiz',
+    order: 4,
+    estimatedMinutes: 10,
+    contentJson: {
+      type: 'quiz' as const,
+      title: 'Quiz: Understanding Variables',
+      questions: [
+        {
+          id: 'q1',
+          question: 'What symbol is used to assign a value to a variable in Python?',
+          options: ['==', '=', ':=', '<-'],
+          correctAnswer: 1,
+          explanation: 'The single equals sign (=) is the assignment operator in Python. The double equals (==) is for comparison.',
+        },
+        {
+          id: 'q2',
+          question: 'Which of the following is NOT a valid Python variable name?',
+          options: ['_count', 'my_var', '2nd_item', 'totalPrice'],
+          correctAnswer: 2,
+          explanation: 'Variable names cannot start with a number. 2nd_item starts with the digit 2, making it invalid.',
+        },
+        {
+          id: 'q3',
+          question: 'What naming convention is recommended for Python variables?',
+          options: ['camelCase', 'PascalCase', 'snake_case', 'UPPER_CASE'],
+          correctAnswer: 2,
+          explanation: 'Python convention (PEP 8) recommends snake_case for variable names, e.g., my_variable.',
+        },
+        {
+          id: 'q4',
+          question: 'What happens when you assign a new value to an existing variable?',
+          options: ['An error occurs', 'The old value is kept', 'The variable holds the new value', 'A new variable is created'],
+          correctAnswer: 2,
+          explanation: 'In Python, reassigning a variable simply updates it to hold the new value. The old value is discarded.',
+        },
+      ],
+      passingScore: 75,
+    },
+    aiConfig: {
+      mode: 'adaptive' as const,
+      personality: 'supportive and clear',
+      hints: [
+        'Think about the difference between assignment and comparison',
+        'Review the rules about what characters can start a variable name',
+      ],
+      maxHints: 2,
+    },
+  },
+
   // ========================================
   // Numeric Types module lessons
   // ========================================
@@ -1218,6 +1270,58 @@ Python is one of the most popular languages in the world, used for:
     },
   },
 
+  {
+    moduleSlug: 'introduction-to-python-getting-started-python',
+    name: 'Quiz: Introduction to Python',
+    type: 'quiz',
+    order: 4,
+    estimatedMinutes: 10,
+    contentJson: {
+      type: 'quiz' as const,
+      title: 'Quiz: Introduction to Python',
+      questions: [
+        {
+          id: 'q1',
+          question: 'Which version of Python should you use for new projects?',
+          options: ['Python 1', 'Python 2', 'Python 3', 'Any version is fine'],
+          correctAnswer: 2,
+          explanation: 'Python 3 is the current and actively maintained version. Python 2 reached end-of-life in 2020.',
+        },
+        {
+          id: 'q2',
+          question: 'What function is used to display output in Python?',
+          options: ['echo()', 'console.log()', 'print()', 'display()'],
+          correctAnswer: 2,
+          explanation: 'The print() function is used to output text and values to the screen in Python.',
+        },
+        {
+          id: 'q3',
+          question: 'Which of the following is Python commonly used for?',
+          options: ['Operating system kernels', 'Data science and machine learning', 'Writing BIOS firmware', 'Hardware driver development'],
+          correctAnswer: 1,
+          explanation: 'Python is widely used for data science, machine learning, web development, and automation. It is not typically used for low-level system programming.',
+        },
+        {
+          id: 'q4',
+          question: 'What does "interpreted" mean in the context of Python?',
+          options: ['Code must be compiled before running', 'Code is executed line by line without a separate compilation step', 'Code is translated to assembly language', 'Code only runs in a browser'],
+          correctAnswer: 1,
+          explanation: 'An interpreted language like Python executes code directly, line by line, without requiring a separate compilation step.',
+        },
+      ],
+      passingScore: 75,
+    },
+    aiConfig: {
+      mode: 'adaptive' as const,
+      personality: 'welcoming and supportive',
+      hints: [
+        'Consider which version is still actively maintained',
+        'Think about what makes Python beginner-friendly',
+      ],
+      maxHints: 2,
+    },
+  },
+
   // ========================================
   // Conditionals and Loops module lessons (Control Flow course)
   // ========================================
@@ -1396,6 +1500,70 @@ print(f"First power of 2 > 1000: {power}")`,
         'Make sure your loop condition will eventually become False to avoid infinite loops',
       ],
       maxHints: 3,
+    },
+  },
+
+  {
+    moduleSlug: 'conditionals-and-loops-control-flow',
+    name: 'Quiz: Control Flow',
+    type: 'quiz',
+    order: 4,
+    estimatedMinutes: 10,
+    contentJson: {
+      type: 'quiz' as const,
+      title: 'Quiz: Control Flow',
+      questions: [
+        {
+          id: 'q1',
+          question: 'What keyword is used for "otherwise if" in Python?',
+          options: ['else if', 'elseif', 'elif', 'otherwise'],
+          correctAnswer: 2,
+          explanation: 'Python uses "elif" as a shorthand for "else if" to check additional conditions.',
+        },
+        {
+          id: 'q2',
+          question: 'What does range(1, 5) generate?',
+          options: ['1, 2, 3, 4, 5', '0, 1, 2, 3, 4', '1, 2, 3, 4', '1, 2, 3, 4, 5, 6'],
+          correctAnswer: 2,
+          explanation: 'range(1, 5) generates numbers starting from 1 up to but not including 5: 1, 2, 3, 4.',
+        },
+        {
+          id: 'q3',
+          question: 'What is the key difference between a for loop and a while loop?',
+          options: [
+            'For loops are faster than while loops',
+            'For loops iterate over a sequence; while loops repeat as long as a condition is true',
+            'While loops can only run once',
+            'There is no difference',
+          ],
+          correctAnswer: 1,
+          explanation: 'For loops iterate over a known sequence (list, range, etc.), while while loops continue executing as long as their condition evaluates to True.',
+        },
+        {
+          id: 'q4',
+          question: 'What happens if a while loop condition is always True?',
+          options: ['The program crashes immediately', 'The loop runs forever (infinite loop)', 'Python automatically stops it after 1000 iterations', 'It skips the loop entirely'],
+          correctAnswer: 1,
+          explanation: 'If the while loop condition never becomes False, the loop runs indefinitely, creating an infinite loop.',
+        },
+        {
+          id: 'q5',
+          question: 'How does Python define code blocks (e.g., inside an if statement)?',
+          options: ['Using curly braces {}', 'Using parentheses ()', 'Using indentation', 'Using the "begin" and "end" keywords'],
+          correctAnswer: 2,
+          explanation: 'Python uses indentation (typically 4 spaces) to define code blocks, unlike many other languages that use curly braces.',
+        },
+      ],
+      passingScore: 60,
+    },
+    aiConfig: {
+      mode: 'adaptive' as const,
+      personality: 'patient and clear',
+      hints: [
+        'Remember how Python shortens common keywords',
+        'Think about whether the end value in range() is included or excluded',
+      ],
+      maxHints: 2,
     },
   },
 
@@ -1705,6 +1873,58 @@ print(f"Columns: {list(df.columns)}")`,
     },
   },
 
+  {
+    moduleSlug: 'dataframe-basics-intro-pandas',
+    name: 'Quiz: DataFrame Basics',
+    type: 'quiz',
+    order: 3,
+    estimatedMinutes: 10,
+    contentJson: {
+      type: 'quiz' as const,
+      title: 'Quiz: DataFrame Basics',
+      questions: [
+        {
+          id: 'q1',
+          question: 'What is a single column of a pandas DataFrame called?',
+          options: ['Array', 'Series', 'List', 'Vector'],
+          correctAnswer: 1,
+          explanation: 'A single column of a DataFrame is a pandas Series, which is a 1D labeled data structure.',
+        },
+        {
+          id: 'q2',
+          question: 'How do you access a column named "Age" from a DataFrame df?',
+          options: ['df.get("Age")', 'df["Age"]', 'df(Age)', 'df->Age'],
+          correctAnswer: 1,
+          explanation: 'You access a DataFrame column using bracket notation: df["Age"]. You can also use df.Age for simple column names.',
+        },
+        {
+          id: 'q3',
+          question: 'What does df.shape return for a DataFrame with 5 rows and 3 columns?',
+          options: ['(3, 5)', '(5, 3)', '15', '[5, 3]'],
+          correctAnswer: 1,
+          explanation: 'df.shape returns a tuple of (rows, columns), so a DataFrame with 5 rows and 3 columns returns (5, 3).',
+        },
+        {
+          id: 'q4',
+          question: 'Which function creates a DataFrame from a dictionary?',
+          options: ['pd.Series()', 'pd.DataFrame()', 'pd.Table()', 'pd.create()'],
+          correctAnswer: 1,
+          explanation: 'pd.DataFrame() is the constructor that creates a DataFrame, and it can accept dictionaries, lists, and other data structures.',
+        },
+      ],
+      passingScore: 75,
+    },
+    aiConfig: {
+      mode: 'adaptive' as const,
+      personality: 'practical and clear',
+      hints: [
+        'DataFrames and Series are the two core pandas data structures',
+        'Remember the order of the shape tuple: rows first, then columns',
+      ],
+      maxHints: 2,
+    },
+  },
+
   // ========================================
   // Handling Missing Data module lessons (Data Cleaning course)
   // ========================================
@@ -1850,6 +2070,65 @@ print(f"Remaining missing values: {df.isnull().sum().sum()}")`,
     },
   },
 
+  {
+    moduleSlug: 'handling-missing-data-data-cleaning',
+    name: 'Quiz: Handling Missing Data',
+    type: 'quiz',
+    order: 3,
+    estimatedMinutes: 10,
+    contentJson: {
+      type: 'quiz' as const,
+      title: 'Quiz: Handling Missing Data',
+      questions: [
+        {
+          id: 'q1',
+          question: 'How are missing values typically represented in pandas?',
+          options: ['None only', 'NaN only', 'Both NaN and None', 'Zero (0)'],
+          correctAnswer: 2,
+          explanation: 'pandas represents missing values as both NaN (Not a Number) and None. Both are treated as missing data in DataFrames.',
+        },
+        {
+          id: 'q2',
+          question: 'Which method removes rows that contain missing values?',
+          options: ['df.remove_na()', 'df.dropna()', 'df.clean()', 'df.delete_missing()'],
+          correctAnswer: 1,
+          explanation: 'df.dropna() removes rows (by default) that contain any missing values.',
+        },
+        {
+          id: 'q3',
+          question: 'What does df.fillna(0) do?',
+          options: ['Removes all zeros', 'Replaces all NaN values with 0', 'Counts the number of zeros', 'Adds a column of zeros'],
+          correctAnswer: 1,
+          explanation: 'df.fillna(0) replaces all NaN/missing values in the DataFrame with 0.',
+        },
+        {
+          id: 'q4',
+          question: 'When is dropping missing values a good strategy?',
+          options: ['When you have a small dataset', 'When most rows have missing values', 'When few values are missing and the dataset is large', 'Dropping is always the best strategy'],
+          correctAnswer: 2,
+          explanation: 'Dropping is appropriate when only a few values are missing and you have a large dataset, so losing some rows does not significantly reduce your data.',
+        },
+        {
+          id: 'q5',
+          question: 'Which method detects missing values in a DataFrame?',
+          options: ['.missing()', '.isnull()', '.isnan()', '.empty()'],
+          correctAnswer: 1,
+          explanation: 'The .isnull() method (or its alias .isna()) returns a boolean DataFrame indicating which values are missing.',
+        },
+      ],
+      passingScore: 60,
+    },
+    aiConfig: {
+      mode: 'adaptive' as const,
+      personality: 'analytical and supportive',
+      hints: [
+        'pandas has specific method names for handling missing data',
+        'Consider the trade-offs between dropping and filling missing values',
+      ],
+      maxHints: 2,
+    },
+  },
+
   // ========================================
   // ML Concepts module lessons (What is Machine Learning? course)
   // ========================================
@@ -1983,6 +2262,75 @@ X_train, X_test, y_train, y_test = train_test_split(
     },
   },
 
+  {
+    moduleSlug: 'ml-concepts-what-is-ml',
+    name: 'Quiz: ML Concepts',
+    type: 'quiz',
+    order: 3,
+    estimatedMinutes: 10,
+    contentJson: {
+      type: 'quiz' as const,
+      title: 'Quiz: ML Concepts',
+      questions: [
+        {
+          id: 'q1',
+          question: 'Which type of machine learning uses labeled data to learn?',
+          options: ['Unsupervised learning', 'Supervised learning', 'Reinforcement learning', 'Transfer learning'],
+          correctAnswer: 1,
+          explanation: 'Supervised learning uses labeled data (input-output pairs) to train models that can predict outputs for new inputs.',
+        },
+        {
+          id: 'q2',
+          question: 'Predicting whether an email is spam or not is an example of:',
+          options: ['Regression', 'Clustering', 'Classification', 'Dimensionality reduction'],
+          correctAnswer: 2,
+          explanation: 'Spam detection is a classification task because the model predicts a category (spam or not spam).',
+        },
+        {
+          id: 'q3',
+          question: 'Why do we split data into training and testing sets?',
+          options: [
+            'To make training faster',
+            'To reduce memory usage',
+            'To evaluate how well the model generalizes to unseen data',
+            'To make the dataset smaller',
+          ],
+          correctAnswer: 2,
+          explanation: 'Splitting data ensures we can test the model on data it has never seen, measuring how well it generalizes rather than just memorizes.',
+        },
+        {
+          id: 'q4',
+          question: 'What is overfitting?',
+          options: [
+            'When a model performs well on both training and test data',
+            'When a model memorizes training data but fails on new data',
+            'When a model is too simple to capture patterns',
+            'When the dataset is too large',
+          ],
+          correctAnswer: 1,
+          explanation: 'Overfitting occurs when a model learns the training data too well (including noise), resulting in poor performance on unseen data.',
+        },
+        {
+          id: 'q5',
+          question: 'What is the typical train/test split ratio?',
+          options: ['50% / 50%', '90% / 10%', '80% / 20%', '70% / 30%'],
+          correctAnswer: 2,
+          explanation: 'A common split is 80% training data and 20% testing data, though the exact ratio can vary depending on the dataset size.',
+        },
+      ],
+      passingScore: 60,
+    },
+    aiConfig: {
+      mode: 'adaptive' as const,
+      personality: 'insightful and supportive',
+      hints: [
+        'Think about what kind of data each learning type requires',
+        'Consider why evaluating on training data alone can be misleading',
+      ],
+      maxHints: 2,
+    },
+  },
+
   // ========================================
   // Classification Basics module lessons (Supervised Learning course)
   // ========================================
@@ -2106,6 +2454,69 @@ print(f"Number of test samples: {len(X_test)}")`,
         'accuracy = accuracy_score(y_test, predictions)',
       ],
       maxHints: 5,
+    },
+  },
+  {
+    moduleSlug: 'classification-basics-supervised-learning',
+    name: 'Quiz: Classification',
+    type: 'quiz',
+    order: 3,
+    estimatedMinutes: 10,
+    contentJson: {
+      type: 'quiz' as const,
+      title: 'Quiz: Classification',
+      questions: [
+        {
+          id: 'q1',
+          question: 'What is the goal of a classification algorithm?',
+          options: ['Predict a continuous number', 'Predict a category or class', 'Group similar data points together', 'Reduce the number of features'],
+          correctAnswer: 1,
+          explanation: 'Classification predicts which category (class) a data point belongs to, such as spam/not spam or cat/dog.',
+        },
+        {
+          id: 'q2',
+          question: 'Which metric is best for evaluating a model with imbalanced classes?',
+          options: ['Accuracy', 'F1 Score', 'Training time', 'Number of features'],
+          correctAnswer: 1,
+          explanation: 'F1 Score balances precision and recall, making it more reliable than accuracy when class distribution is imbalanced.',
+        },
+        {
+          id: 'q3',
+          question: 'What does model.fit(X_train, y_train) do in scikit-learn?',
+          options: ['Makes predictions on test data', 'Trains the model on training data', 'Evaluates model accuracy', 'Splits the data into train and test sets'],
+          correctAnswer: 1,
+          explanation: 'The fit() method trains (fits) the model by learning patterns from the training features (X_train) and labels (y_train).',
+        },
+        {
+          id: 'q4',
+          question: 'Which of the following is NOT a classification algorithm?',
+          options: ['Decision Tree', 'Random Forest', 'Linear Regression', 'K-Nearest Neighbors'],
+          correctAnswer: 2,
+          explanation: 'Linear Regression is a regression algorithm that predicts continuous values. The others are classification algorithms.',
+        },
+        {
+          id: 'q5',
+          question: 'What does a confusion matrix show?',
+          options: [
+            'The training time of the model',
+            'The breakdown of correct and incorrect predictions',
+            'The number of features used',
+            'The learning rate of the algorithm',
+          ],
+          correctAnswer: 1,
+          explanation: 'A confusion matrix shows how many predictions were correct vs incorrect, broken down by predicted and actual classes.',
+        },
+      ],
+      passingScore: 60,
+    },
+    aiConfig: {
+      mode: 'adaptive' as const,
+      personality: 'analytical and encouraging',
+      hints: [
+        'Think about the difference between classification (categories) and regression (numbers)',
+        'Consider what each scikit-learn method does in the ML workflow',
+      ],
+      maxHints: 2,
     },
   },
 ];

@@ -138,10 +138,10 @@ export const userRouter = router({
         throw new Error('Email confirmation does not match your account email');
       }
 
-      // Delete user profile first (foreign key constraint)
-      await ctx.db.delete(userProfiles).where(eq(userProfiles.userId, ctx.user.id));
-
-      // Delete the user account
+      // Delete the user account — FK cascade constraints on all child tables
+      // (userProfiles, enrollments, progress, courseProgress, xpTransactions,
+      // streakHistory, userAchievements, aiSessions, certifications, assessments,
+      // learningPaths) will automatically clean up all related data.
       await ctx.db.delete(users).where(eq(users.id, ctx.user.id));
 
       return { success: true };

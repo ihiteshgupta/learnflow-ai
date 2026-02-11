@@ -2,7 +2,7 @@ import { z } from 'zod';
 import { TRPCError } from '@trpc/server';
 import { router, protectedProcedure, publicProcedure } from '../trpc';
 import { tracks, courses, lessons, enrollments, progress } from '@/lib/db/schema';
-import { eq, and } from 'drizzle-orm';
+import { eq, and, inArray } from 'drizzle-orm';
 
 export const courseRouter = router({
   getDomains: publicProcedure.query(async ({ ctx }) => {
@@ -97,20 +97,23 @@ export const courseRouter = router({
       // Get all lesson IDs for this course
       const lessonIds = course.modules.flatMap((m) => m.lessons.map((l) => l.id));
 
-      // Get user progress
-      const userProgress = await ctx.db.query.progress.findMany({
-        where: and(
-          eq(progress.userId, ctx.user.id),
-        ),
-      });
+      // Get user progress filtered to only this course's lessons
+      const userProgress = lessonIds.length > 0
+        ? await ctx.db.query.progress.findMany({
+            where: and(
+              eq(progress.userId, ctx.user.id),
+              inArray(progress.lessonId, lessonIds),
+            ),
+          })
+        : [];
 
       const completedLessons = userProgress.filter(
-        (p) => p.status === 'completed' && lessonIds.includes(p.lessonId)
+        (p) => p.status === 'completed'
       ).length;
 
       return {
         ...course,
-        progress: userProgress.filter((p) => lessonIds.includes(p.lessonId)),
+        progress: userProgress,
         completionPercentage: lessonIds.length > 0
           ? Math.round((completedLessons / lessonIds.length) * 100)
           : 0,

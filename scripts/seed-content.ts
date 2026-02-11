@@ -241,7 +241,81 @@ Write a statement that prints \`Hello, World!\` to the console.`,
     aiConfig: lesson1_2Config,
     estimatedMinutes: 15,
   }).returning();
-  console.log(`   ✅ Lesson created: ${lesson1_2.name}\n`);
+  console.log(`   ✅ Lesson created: ${lesson1_2.name}`);
+
+  // Lesson 1.3: Introduction to JavaScript Quiz (Quiz)
+  const lesson1_3Content: LessonContent = {
+    type: 'quiz',
+    title: 'Quiz: Introduction to JavaScript',
+    objectives: [
+      'Recall key facts about JavaScript',
+      'Understand where JavaScript runs',
+      'Know basic JavaScript syntax',
+    ],
+    steps: [
+      {
+        id: 'q1',
+        type: 'question',
+        content: 'Where can JavaScript run?',
+        options: ['Only in web browsers', 'Only on servers', 'In browsers, servers, mobile apps, and desktop apps', 'Only on Windows'],
+        correctAnswer: 2,
+      },
+      {
+        id: 'q2',
+        type: 'question',
+        content: 'Which function is used to print output in JavaScript?',
+        options: ['print()', 'echo()', 'console.log()', 'System.out.println()'],
+        correctAnswer: 2,
+      },
+      {
+        id: 'q3',
+        type: 'question',
+        content: 'Who created JavaScript?',
+        options: ['James Gosling', 'Brendan Eich', 'Guido van Rossum', 'Dennis Ritchie'],
+        correctAnswer: 1,
+      },
+      {
+        id: 'q4',
+        type: 'question',
+        content: 'What is the relationship between JavaScript and Java?',
+        options: [
+          'JavaScript is a simplified version of Java',
+          'Java is built on top of JavaScript',
+          'They are the same language with different names',
+          'They are completely different languages despite the similar name',
+        ],
+        correctAnswer: 3,
+      },
+      {
+        id: 'q5',
+        type: 'question',
+        content: 'Is JavaScript a compiled or interpreted language?',
+        options: ['Compiled', 'Interpreted', 'Neither', 'Both equally'],
+        correctAnswer: 1,
+      },
+    ],
+  };
+
+  const lesson1_3Config: AIConfig = {
+    mode: 'adaptive',
+    personality: 'encouraging and educational',
+    hints: [
+      'Think about all the platforms mentioned in the lesson',
+      'JavaScript has evolved far beyond its original browser-only roots',
+    ],
+    maxHints: 2,
+  };
+
+  const [lesson1_3] = await db.insert(lessons).values({
+    moduleId: module1.id,
+    name: 'Quiz: Introduction to JavaScript',
+    type: 'quiz',
+    order: 3,
+    contentJson: lesson1_3Content,
+    aiConfig: lesson1_3Config,
+    estimatedMinutes: 10,
+  }).returning();
+  console.log(`   ✅ Lesson created: ${lesson1_3.name}\n`);
 
   // ==========================================
   // 7. Create Lessons for Module 2
@@ -382,28 +456,28 @@ let flag = true;        // What does this flag mean?
         type: 'question',
         content: 'Which keyword should you use to declare a variable that will never be reassigned?',
         options: ['A) let', 'B) const', 'C) var', 'D) static'],
-        correctAnswer: 'B) const',
+        correctAnswer: 1,
       },
       {
         id: 'q2',
         type: 'question',
         content: 'What data type is the value `42` in JavaScript?',
         options: ['A) String', 'B) Integer', 'C) Number', 'D) Float'],
-        correctAnswer: 'C) Number',
+        correctAnswer: 2,
       },
       {
         id: 'q3',
         type: 'question',
         content: 'Which of the following is a valid variable name in JavaScript?',
         options: ['A) 2fast2furious', 'B) my-variable', 'C) _privateVar', 'D) class'],
-        correctAnswer: 'C) _privateVar',
+        correctAnswer: 2,
       },
       {
         id: 'q4',
         type: 'question',
         content: 'What is the result of `typeof null` in JavaScript?',
         options: ['A) "null"', 'B) "undefined"', 'C) "object"', 'D) "none"'],
-        correctAnswer: 'C) "object"',
+        correctAnswer: 2,
       },
       {
         id: 'q5',
@@ -415,7 +489,7 @@ let flag = true;        // What does this flag mean?
           'C) Both are block-scoped',
           'D) Both are function-scoped',
         ],
-        correctAnswer: 'B) let is block-scoped, var is function-scoped',
+        correctAnswer: 1,
       },
     ],
   };
@@ -453,7 +527,7 @@ let flag = true;        // What does this flag mean?
   console.log(`  • 1 Track: ${track.name}`);
   console.log(`  • 1 Course: ${course.name}`);
   console.log(`  • 2 Modules: ${module1.name}, ${module2.name}`);
-  console.log(`  • 4 Lessons across both modules`);
+  console.log(`  • 5 Lessons across both modules`);
   console.log('\nYou can now explore the content in the application!');
 }
 
