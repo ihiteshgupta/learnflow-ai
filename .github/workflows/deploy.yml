@@ -22,10 +22,6 @@ on:
 env:
   REGISTRY: dronacharyaacr.azurecr.io
   IMAGE_NAME: dronacharya/web
-  AKS_CLUSTER: dronacharya-production-aks
-  AKS_RESOURCE_GROUP: dronacharya-production-rg
-  AKS_CLUSTER_STAGING: dronacharya-staging-aks
-  AKS_RESOURCE_GROUP_STAGING: dronacharya-staging-rg
 
 jobs:
   build-and-push:
@@ -78,34 +74,17 @@ jobs:
     runs-on: ubuntu-latest
     environment: staging
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set AKS Context
-        uses: azure/aks-set-context@v4
+      - name: Deploy to Azure App Service (staging)
+        uses: azure/webapps-deploy@v3
         with:
-          resource-group: ${{ env.AKS_RESOURCE_GROUP_STAGING }}
-          cluster-name: ${{ env.AKS_CLUSTER_STAGING }}
-
-      - name: Deploy to staging
-        run: |
-          kubectl set image deployment/dronacharya-web \
-            web="${REGISTRY}/${IMAGE_NAME}:${COMMIT_SHA}" \
-            -n dronacharya-staging
-          kubectl rollout status deployment/dronacharya-web -n dronacharya-staging --timeout=300s
-        env:
-          REGISTRY: ${{ env.REGISTRY }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          COMMIT_SHA: ${{ needs.build-and-push.outputs.short_sha }}
+          app-name: dronacharya-staging-app
+          resource-group-name: dronacharya-staging-rg
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.short_sha }}
 
   deploy-production:
     needs: build-and-push
@@ -113,51 +92,14 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup kubectl
-        uses: azure/setup-kubectl@v3
-        with:
-          version: 'latest'
-
       - name: Azure Login
         uses: azure/login@v2
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Set AKS Context
-        uses: azure/aks-set-context@v4
+      - name: Deploy to Azure App Service (production)
+        uses: azure/webapps-deploy@v3
         with:
-          resource-group: ${{ env.AKS_RESOURCE_GROUP }}
-          cluster-name: ${{ env.AKS_CLUSTER }}
-
-      - name: Deploy canary (10%)
-        run: |
-          kubectl apply -f k8s/overlays/production/canary.yaml
-          kubectl set image deployment/dronacharya-web-canary \
-            web="${REGISTRY}/${IMAGE_NAME}:${COMMIT_SHA}" \
-            -n dronacharya
-        env:
-          REGISTRY: ${{ env.REGISTRY }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          COMMIT_SHA: ${{ needs.build-and-push.outputs.short_sha }}
-
-      - name: Wait and monitor canary
-        run: |
-          sleep 300
-          kubectl rollout status deployment/dronacharya-web-canary -n dronacharya --timeout=300s
-
-      - name: Promote to full rollout
-        run: |
-          kubectl set image deployment/dronacharya-web \
-            web="${REGISTRY}/${IMAGE_NAME}:${COMMIT_SHA}" \
-            -n dronacharya
-          kubectl rollout status deployment/dronacharya-web -n dronacharya --timeout=300s
-        env:
-          REGISTRY: ${{ env.REGISTRY }}
-          IMAGE_NAME: ${{ env.IMAGE_NAME }}
-          COMMIT_SHA: ${{ needs.build-and-push.outputs.short_sha }}
-
-      - name: Remove canary
-        run: |
-          kubectl delete -f k8s/overlays/production/canary.yaml
+          app-name: dronacharya-production-app
+          resource-group-name: dronacharya-production-rg
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push.outputs.short_sha }}

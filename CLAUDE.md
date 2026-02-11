@@ -70,8 +70,7 @@ dronacharya/
 │   │   └── auth/         # NextAuth configuration
 │   └── stores/           # Zustand stores
 ├── public/               # Static assets
-├── k8s/                  # Kubernetes manifests
-├── terraform/            # Infrastructure as code
+├── terraform/            # Infrastructure as code (Azure App Service)
 └── docs/                 # Documentation
     └── plans/            # Design and implementation plans
 ```
@@ -133,7 +132,6 @@ QDRANT_API_KEY=...
 
 - Uses pnpm as package manager
 - Git worktrees for parallel development (`.worktrees/`)
-- Kubernetes deployment configs in `k8s/`
 - Terraform for Azure infrastructure
-- Target deployment: Azure AKS + PostgreSQL Flexible Server + Redis
+- Target deployment: Azure App Service + PostgreSQL Flexible Server + Redis
 - Domain: www.dronacharya.app / api.dronacharya.app
