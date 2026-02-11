@@ -1,15 +1,12 @@
+import { getHttpMetrics } from '@/lib/metrics/counters';
+
 export const dynamic = 'force-dynamic';
 
 const APP_VERSION = process.env.npm_package_version || '0.1.0';
 const startTime = Date.now();
 
-// Simple in-memory counter for HTTP requests to the metrics endpoint itself.
-// In a production setup this would be replaced by middleware-level counters,
-// but it demonstrates the pattern without any external dependency.
-let metricsRequestCount = 0;
-
 export async function GET() {
-  metricsRequestCount++;
+  const httpMetrics = getHttpMetrics();
 
   const mem = process.memoryUsage();
   const uptimeSeconds = (Date.now() - startTime) / 1000;
@@ -25,10 +22,17 @@ export async function GET() {
     '# TYPE dronacharya_up gauge',
     'dronacharya_up 1',
     '',
-    // HTTP requests counter (placeholder)
-    '# HELP dronacharya_http_requests_total Total number of HTTP requests (metrics endpoint only, placeholder).',
+    // HTTP requests counter
+    '# HELP dronacharya_http_requests_total Total number of HTTP requests.',
     '# TYPE dronacharya_http_requests_total counter',
-    `dronacharya_http_requests_total ${metricsRequestCount}`,
+    `dronacharya_http_requests_total ${httpMetrics.total}`,
+    '',
+    // Per-method breakdown
+    '# HELP dronacharya_http_requests_by_method HTTP requests broken down by method.',
+    '# TYPE dronacharya_http_requests_by_method counter',
+    ...Object.entries(httpMetrics.byMethod).map(
+      ([method, count]) => `dronacharya_http_requests_by_method{method="${method}"} ${count}`
+    ),
     '',
     // Process uptime
     '# HELP process_uptime_seconds Time in seconds since the process started.',

@@ -85,9 +85,9 @@ Dronacharya uses 6 specialized AI agents:
 | **Tutor** | Guided learning, Socratic questioning | ✅ Working |
 | **Assessor** | Quiz generation, answer evaluation | ✅ Working |
 | **Mentor** | Career guidance, motivation | ✅ Working |
-| **Code Review** | Code analysis, best practices | 🟡 Partial |
-| **Project Guide** | Portfolio project guidance | 🟡 Partial |
-| **Quiz Generator** | RAG-based question generation | ❌ Pending |
+| **Code Review** | Code analysis, security review, refactoring | ✅ Working |
+| **Project Guide** | Portfolio project guidance, deployment | ✅ Working |
+| **Quiz Generator** | RAG-based adaptive question generation | ✅ Working |
 
 ## Learning Domains (Beta)
 

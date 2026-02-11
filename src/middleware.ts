@@ -1,4 +1,5 @@
 import { auth } from '@/lib/auth';
+import { incrementHttpRequests } from '@/lib/metrics/counters';
 import { NextResponse } from 'next/server';
 
 // Routes that don't require authentication
@@ -8,6 +9,10 @@ const publicRoutes = [
   '/auth/forgot-password',
   '/auth/reset-password',
   '/api/auth',
+  '/api/health',
+  '/api/ready',
+  '/api/metrics',
+  '/verify',
 ];
 
 // Routes that are always public (static assets, etc.)
@@ -19,6 +24,9 @@ const alwaysPublicPrefixes = [
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
+
+  // Count every request that passes through middleware
+  incrementHttpRequests(req.method);
 
   // Allow always-public routes
   for (const prefix of alwaysPublicPrefixes) {

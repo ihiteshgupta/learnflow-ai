@@ -1,5 +1,20 @@
 {
   "version": "7",
   "dialect": "postgresql",
-  "entries": []
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1770622419823,
+      "tag": "0000_mean_polaris",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770818492342,
+      "tag": "0001_tidy_sunfire",
+      "breakpoints": true
+    }
+  ]
 }
