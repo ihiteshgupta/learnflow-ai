@@ -1,7 +1,7 @@
 import { getCertificateTemplate, CertificateData } from './templates';
 
 // App base URL for verification links
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://dronacharya.ai';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.dronacharya.app';
 
 export interface CertificateInput {
   recipientName: string;

@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: learnflow-ai
+  name: dronacharya-ai
 spec:
   replicas: 1
   template:

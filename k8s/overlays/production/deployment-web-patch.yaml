@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: learnflow-web
+  name: dronacharya-web
 spec:
   replicas: 3
   strategy:
@@ -26,4 +26,4 @@ spec:
           whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
-              app: learnflow-web
+              app: dronacharya-web

@@ -83,7 +83,7 @@ describe('useUser', () => {
       expect(result.current.user).toEqual({
         id: DEMO_USER_ID,
         name: 'Beta User',
-        email: 'demo@dronacharya.ai',
+        email: 'demo@dronacharya.app',
         isDemo: true,
       });
       expect(result.current.isLoading).toBe(false);

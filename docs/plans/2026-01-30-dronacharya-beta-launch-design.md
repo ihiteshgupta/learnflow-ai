@@ -9,7 +9,7 @@
 
 ## Overview
 
-Rebrand LearnFlow AI to "Dronacharya" and launch as an open beta under the Margadeshaka umbrella. Complete all 6 AI agents, polish existing features, and deploy on Azure.
+Rebrand Dronacharya to "Dronacharya" and launch as an open beta under the Margadeshaka umbrella. Complete all 6 AI agents, polish existing features, and deploy on Azure.
 
 ---
 
@@ -17,7 +17,7 @@ Rebrand LearnFlow AI to "Dronacharya" and launch as an open beta under the Marga
 
 **Name:** Dronacharya (द्रोणाचार्य)
 **Tagline:** "AI that teaches like a Guru"
-**Domain:** dronacharya.ai (or dronacharya.margadeshaka.ai for beta)
+**Domain:** dronacharya.app (www.dronacharya.app / api.dronacharya.app)
 
 ### Brand Positioning
 - Named after the legendary teacher from Mahabharata who trained the Pandavas
@@ -32,7 +32,7 @@ Rebrand LearnFlow AI to "Dronacharya" and launch as an open beta under the Marga
 
 ### Project Restructure
 ```
-~/personal-projects/dronacharya/     # Renamed from learnflow-ai
+~/personal-projects/dronacharya/     # Renamed from dronacharya
 ├── src/
 ├── docs/
 ├── public/
@@ -121,7 +121,7 @@ Azure Resource Group: rg-dronacharya-prod
 ### Environments
 - `dev` — Local development
 - `staging` — Azure preview slot for testing
-- `prod` — Live beta at dronacharya.ai
+- `prod` — Live beta at dronacharya.app
 
 ### CI/CD Pipeline (GitHub Actions)
 ```
@@ -130,7 +130,7 @@ manual approval → deploy prod
 ```
 
 ### Database Schema Updates
-- Rename `learnflow_` prefixes to `dronacharya_`
+- Rename `dronacharya_` prefixes (done)
 - Add `beta_feedback` table for user feedback collection
 - Add `waitlist` table (for future use)
 
@@ -175,7 +175,7 @@ manual approval → deploy prod
 | 15-17 | Public beta | Launch announcement, monitor, hotfix as needed |
 
 ### Launch Checklist
-- [ ] dronacharya.ai domain configured
+- [ ] dronacharya.app domain configured
 - [ ] SSL certificate active
 - [ ] Application Insights alerting
 - [ ] Error tracking (Sentry or similar)
@@ -234,7 +234,7 @@ manual approval → deploy prod
 
 | Question | Decision |
 |----------|----------|
-| Which app first? | LearnFlow AI (as Dronacharya) |
+| Which app first? | Dronacharya (as Dronacharya) |
 | Beta scope | Full platform preview |
 | Target audience | Mixed/General with domain selection |
 | Timeline | 2-3 weeks (aggressive) |

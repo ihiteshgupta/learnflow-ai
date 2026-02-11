@@ -5,7 +5,7 @@ metadata:
   namespace: dronacharya
 data:
   NODE_ENV: "production"
-  NEXT_PUBLIC_APP_URL: "https://dronacharya.ai"
+  NEXT_PUBLIC_APP_URL: "https://www.dronacharya.app"
   AI_MODEL_PRIMARY: "claude-sonnet-4-20250514"
   AI_MODEL_FALLBACK: "gpt-4o"
   ENABLE_GAMIFICATION: "true"

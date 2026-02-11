@@ -1,10 +1,11 @@
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: learnflow-config
+  name: dronacharya-config
 data:
   NODE_ENV: "staging"
   NEXT_PUBLIC_APP_URL: "https://www.dronacharya.app"
   ENABLE_GAMIFICATION: "true"
+  NEXT_PUBLIC_API_URL: "https://api.dronacharya.app"
   ENABLE_AI_PROCTORING: "false"
   MAX_AI_REQUESTS_PER_MINUTE: "60"

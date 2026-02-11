@@ -135,4 +135,5 @@ QDRANT_API_KEY=...
 - Git worktrees for parallel development (`.worktrees/`)
 - Kubernetes deployment configs in `k8s/`
 - Terraform for Azure infrastructure
-- Target deployment: Azure App Service + PostgreSQL
+- Target deployment: Azure AKS + PostgreSQL Flexible Server + Redis
+- Domain: www.dronacharya.app / api.dronacharya.app

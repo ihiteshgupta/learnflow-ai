@@ -3,21 +3,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: learnflow-web-canary
-  namespace: learnflow
+  name: dronacharya-web-canary
+  namespace: dronacharya
   labels:
-    app: learnflow-web
+    app: dronacharya-web
     track: canary
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: learnflow-web
+      app: dronacharya-web
       track: canary
   template:
     metadata:
       labels:
-        app: learnflow-web
+        app: dronacharya-web
         track: canary
       annotations:
         prometheus.io/scrape: "true"
@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: web
-          image: learnflow/web:canary
+          image: dronacharya/web:canary
           ports:
             - containerPort: 3000
               name: http
@@ -39,27 +39,27 @@ spec:
               cpu: "1000m"
           envFrom:
             - configMapRef:
-                name: learnflow-config
+                name: dronacharya-config
           env:
             - name: DATABASE_URL
               valueFrom:
                 secretKeyRef:
-                  name: learnflow-secrets
+                  name: dronacharya-secrets
                   key: database-url
             - name: REDIS_URL
               valueFrom:
                 secretKeyRef:
-                  name: learnflow-secrets
+                  name: dronacharya-secrets
                   key: redis-url
             - name: ANTHROPIC_API_KEY
               valueFrom:
                 secretKeyRef:
-                  name: learnflow-secrets
+                  name: dronacharya-secrets
                   key: anthropic-api-key
             - name: NEXTAUTH_SECRET
               valueFrom:
                 secretKeyRef:
-                  name: learnflow-secrets
+                  name: dronacharya-secrets
                   key: nextauth-secret
           livenessProbe:
             httpGet:
@@ -80,10 +80,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: learnflow-web-canary
-  namespace: learnflow
+  name: dronacharya-web-canary
+  namespace: dronacharya
   labels:
-    app: learnflow-web
+    app: dronacharya-web
     track: canary
 spec:
   type: ClusterIP
@@ -93,5 +93,5 @@ spec:
       protocol: TCP
       name: http
   selector:
-    app: learnflow-web
+    app: dronacharya-web
     track: canary

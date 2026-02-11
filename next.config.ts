@@ -6,7 +6,7 @@ const cspDirectives = [
   "style-src 'self' 'unsafe-inline'",   // Tailwind CSS requires unsafe-inline
   "img-src 'self' data: blob:",
   "font-src 'self'",
-  "connect-src 'self'",
+  "connect-src 'self' https://api.dronacharya.app https://*.dronacharya.app",
   "frame-ancestors 'self'",
   "base-uri 'self'",
   "form-action 'self'",

@@ -1,5 +1,11 @@
-variable "region" {
-  description = "AWS region"
+variable "location" {
+  description = "Azure region"
   type        = string
-  default     = "us-east-1"
+  default     = "eastus"
+}
+
+variable "db_admin_password" {
+  description = "PostgreSQL administrator password"
+  type        = string
+  sensitive   = true
 }

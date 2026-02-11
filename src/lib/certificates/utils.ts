@@ -1,6 +1,6 @@
 // Client-safe certificate utilities (no Node.js dependencies)
 
-const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://learnflow.ai';
+const APP_URL = process.env.NEXT_PUBLIC_APP_URL || 'https://www.dronacharya.app';
 
 /**
  * Generate LinkedIn share URL for certificate

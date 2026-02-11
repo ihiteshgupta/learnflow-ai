@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: learnflow-staging
+namespace: dronacharya-staging
 
 resources:
   - ../../base
@@ -17,34 +17,23 @@ labels:
 patches:
   - target:
       kind: Deployment
-      name: learnflow-web
+      name: dronacharya-web
     path: deployment-web-patch.yaml
   - target:
-      kind: Deployment
-      name: learnflow-ai
-    path: deployment-ai-patch.yaml
-  - target:
       kind: Ingress
-      name: learnflow-ingress
+      name: dronacharya-ingress
     path: ingress-patch.yaml
   - target:
       kind: HorizontalPodAutoscaler
-      name: learnflow-web-hpa
+      name: dronacharya-web-hpa
     path: hpa-web-patch.yaml
   - target:
-      kind: HorizontalPodAutoscaler
-      name: learnflow-ai-hpa
-    path: hpa-ai-patch.yaml
-  - target:
       kind: ConfigMap
-      name: learnflow-config
+      name: dronacharya-config
     path: configmap-patch.yaml
 
 # Staging image tags - Azure Container Registry
 images:
-  - name: learnflow/web
-    newName: learnflowacr.azurecr.io/learnflow/web
-    newTag: staging
-  - name: learnflow/ai-service
-    newName: learnflowacr.azurecr.io/learnflow/ai-service
+  - name: dronacharya/web
+    newName: dronacharyaacr.azurecr.io/dronacharya/web
     newTag: staging

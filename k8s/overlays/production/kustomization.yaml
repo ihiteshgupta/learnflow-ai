@@ -1,7 +1,7 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-namespace: learnflow
+namespace: dronacharya
 
 resources:
   - ../../base
@@ -18,24 +18,19 @@ labels:
 patches:
   - target:
       kind: Deployment
-      name: learnflow-web
+      name: dronacharya-web
     path: deployment-web-patch.yaml
   - target:
-      kind: Deployment
-      name: learnflow-ai
-    path: deployment-ai-patch.yaml
-  - target:
       kind: Ingress
-      name: learnflow-ingress
+      name: dronacharya-ingress
     path: ingress-patch.yaml
   - target:
       kind: ConfigMap
-      name: learnflow-config
+      name: dronacharya-config
     path: configmap-patch.yaml
 
 # Production image tags (overridden by CI/CD)
 images:
-  - name: learnflow/web
-    newTag: latest
-  - name: learnflow/ai-service
+  - name: dronacharya/web
+    newName: dronacharyaacr.azurecr.io/dronacharya/web
     newTag: latest

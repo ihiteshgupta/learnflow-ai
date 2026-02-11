@@ -1,34 +1,34 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: learnflow-ingress
+  name: dronacharya-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-staging
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - dronacharya.app
-        - www.dronacharya.app
-      secretName: dronacharya-tls-secret
+        - staging.dronacharya.app
+        - api-staging.dronacharya.app
+      secretName: dronacharya-staging-tls
   rules:
-    - host: dronacharya.app
+    - host: staging.dronacharya.app
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: staging-learnflow-web
+                name: staging-dronacharya-web
                 port:
                   number: 80
-    - host: www.dronacharya.app
+    - host: api-staging.dronacharya.app
       http:
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
-                name: staging-learnflow-web
+                name: staging-dronacharya-web
                 port:
                   number: 80

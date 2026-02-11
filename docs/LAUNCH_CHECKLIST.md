@@ -11,7 +11,7 @@
 - [ ] Beta content seeded
 
 ### Application ✅
-- [x] Rebrand from LearnFlow AI to Dronacharya complete
+- [x] Rebrand from Dronacharya to Dronacharya complete
 - [x] UI updated with Dronacharya branding
 - [x] Onboarding flow implemented
 - [x] Hardcoded user IDs removed
@@ -85,11 +85,12 @@
 - [ ] Configure error alerts
 - [ ] Set up uptime monitoring (UptimeRobot or similar)
 
-### Domain Setup (Future)
-- [ ] Purchase/configure dronacharya.ai domain
-- [ ] Add custom domain to App Service
-- [ ] Configure SSL certificate
-- [ ] Set up DNS records
+### Domain Setup
+- [ ] Configure dronacharya.app domain with Azure DNS
+- [ ] Point NS records to Azure DNS zone
+- [ ] Add custom domain to AKS ingress
+- [ ] Configure SSL certificate (cert-manager / Let's Encrypt)
+- [ ] Set up DNS records (www.dronacharya.app, api.dronacharya.app)
 
 ### Feedback Collection
 - [ ] Add feedback mechanism (form or chat)
@@ -144,4 +145,4 @@ After 1 week of beta:
 
 - **Primary**: Hitesh Gupta
 - **Project**: Margadeshaka - Dronacharya
-- **Repository**: learnflow-ai (dronacharya-beta-launch branch)
+- **Repository**: dronacharya (dronacharya-beta-launch branch)

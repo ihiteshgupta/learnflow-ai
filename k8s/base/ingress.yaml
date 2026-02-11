@@ -13,11 +13,11 @@ metadata:
 spec:
   tls:
     - hosts:
-        - dronacharya.ai
-        - www.dronacharya.ai
-      secretName: dronacharya-tls
+        - www.dronacharya.app
+        - api.dronacharya.app
+      secretName: dronacharya-app-tls
   rules:
-    - host: dronacharya.ai
+    - host: www.dronacharya.app
       http:
         paths:
           - path: /
@@ -27,10 +27,10 @@ spec:
                 name: dronacharya-web
                 port:
                   number: 80
-    - host: www.dronacharya.ai
+    - host: api.dronacharya.app
       http:
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:

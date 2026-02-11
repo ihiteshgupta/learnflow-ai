@@ -8,7 +8,7 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DATABASE_URL=postgresql://learnflow:learnflow@postgres:5432/learnflow
+      - DATABASE_URL=postgresql://dronacharya:dronacharya@postgres:5432/dronacharya
       - REDIS_URL=redis://redis:6379
       - QDRANT_URL=http://qdrant:6333
     depends_on:
@@ -19,9 +19,9 @@ services:
   postgres:
     image: postgres:17-alpine
     environment:
-      POSTGRES_USER: learnflow
-      POSTGRES_PASSWORD: learnflow
-      POSTGRES_DB: learnflow
+      POSTGRES_USER: dronacharya
+      POSTGRES_PASSWORD: dronacharya
+      POSTGRES_DB: dronacharya
     volumes:
       - postgres_data:/var/lib/postgresql/data
     ports:

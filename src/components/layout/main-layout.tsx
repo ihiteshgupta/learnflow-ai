@@ -1,5 +1,6 @@
 'use client';
 
+import { useState } from 'react';
 import { Header } from './header';
 import { Sidebar } from './sidebar';
 
@@ -10,17 +11,44 @@ interface MainLayoutProps {
 // Demo user - in real app this comes from auth context
 const defaultUser = {
   name: 'Test User',
-  email: 'test@dronacharya.ai',
+  email: 'test@dronacharya.app',
   avatarUrl: undefined,
 };
 
 export function MainLayout({ children }: MainLayoutProps) {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const handleMenuToggle = () => {
+    setIsMobileMenuOpen((prev) => !prev);
+  };
+
+  const handleCloseMobileMenu = () => {
+    setIsMobileMenuOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-background">
-      <Header user={defaultUser} xp={0} streak={0} />
+      <Header
+        user={defaultUser}
+        xp={0}
+        streak={0}
+        onMenuClick={handleMenuToggle}
+      />
       <div className="flex">
-        <Sidebar />
-        <main className="flex-1 p-6">{children}</main>
+        {/* Desktop Sidebar */}
+        <Sidebar variant="desktop" />
+
+        {/* Mobile Sidebar Sheet */}
+        <Sidebar
+          variant="mobile"
+          isOpen={isMobileMenuOpen}
+          onClose={handleCloseMobileMenu}
+        />
+
+        {/* Main Content */}
+        <main id="main-content" className="flex-1 p-3 sm:p-4 md:p-6 max-w-full overflow-x-hidden">
+          {children}
+        </main>
       </div>
     </div>
   );

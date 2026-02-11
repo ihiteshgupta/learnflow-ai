@@ -195,7 +195,7 @@ export default function VerifyPage() {
             This certificate was issued by <strong>Dronacharya</strong> and has been verified as authentic.
           </p>
           <Button variant="outline" size="sm" asChild>
-            <a href="https://learnflow.ai" target="_blank" rel="noopener noreferrer">
+            <a href="https://www.dronacharya.app" target="_blank" rel="noopener noreferrer">
               <ExternalLink className="h-4 w-4 mr-2" />
               Visit Dronacharya
             </a>

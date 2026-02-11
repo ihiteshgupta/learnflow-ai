@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: learnflow-ingress
+  name: dronacharya-ingress
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt-prod
     nginx.ingress.kubernetes.io/rate-limit: "100"
@@ -9,31 +9,32 @@ metadata:
     nginx.ingress.kubernetes.io/proxy-body-size: "10m"
     nginx.ingress.kubernetes.io/ssl-redirect: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/cors-allow-origin: "https://www.dronacharya.app"
 spec:
   ingressClassName: nginx
   tls:
     - hosts:
-        - learnflow.ai
-        - www.learnflow.ai
-      secretName: production-tls-secret
+        - www.dronacharya.app
+        - api.dronacharya.app
+      secretName: dronacharya-app-tls
   rules:
-    - host: learnflow.ai
+    - host: www.dronacharya.app
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: learnflow-web
+                name: dronacharya-web
                 port:
                   number: 80
-    - host: www.learnflow.ai
+    - host: api.dronacharya.app
       http:
         paths:
-          - path: /
+          - path: /api
             pathType: Prefix
             backend:
               service:
-                name: learnflow-web
+                name: dronacharya-web
                 port:
                   number: 80

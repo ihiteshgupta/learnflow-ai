@@ -36,7 +36,7 @@ export function useUser(): { user: User | null; isLoading: boolean } {
     user: {
       id: DEMO_USER_ID,
       name: 'Beta User',
-      email: 'demo@dronacharya.ai',
+      email: 'demo@dronacharya.app',
       isDemo: true,
     },
     isLoading: false,

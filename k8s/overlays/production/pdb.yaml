@@ -1,21 +1,21 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: learnflow-web-pdb
-  namespace: learnflow
+  name: dronacharya-web-pdb
+  namespace: dronacharya
 spec:
   minAvailable: 2
   selector:
     matchLabels:
-      app: learnflow-web
+      app: dronacharya-web
 ---
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: learnflow-ai-pdb
-  namespace: learnflow
+  name: dronacharya-ai-pdb
+  namespace: dronacharya
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: learnflow-ai
+      app: dronacharya-ai

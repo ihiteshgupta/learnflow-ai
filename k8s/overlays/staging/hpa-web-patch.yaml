@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: learnflow-web-hpa
+  name: dronacharya-web-hpa
 spec:
   minReplicas: 1
   maxReplicas: 5

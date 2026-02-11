@@ -2,79 +2,85 @@ terraform {
   required_version = ">= 1.5.0"
 
   required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 3.0"
     }
   }
 
-  backend "s3" {
-    bucket         = "learnflow-terraform-state"
-    key            = "production/terraform.tfstate"
-    region         = "us-east-1"
-    encrypt        = true
-    dynamodb_table = "learnflow-terraform-locks"
+  backend "azurerm" {
+    resource_group_name  = "dronacharya-tfstate"
+    storage_account_name = "dronacharyatfstate"
+    container_name       = "tfstate"
+    key                  = "production.terraform.tfstate"
   }
 }
 
-provider "aws" {
-  region = var.region
-
-  default_tags {
-    tags = {
-      Environment = "production"
-      Project     = "learnflow"
-      ManagedBy   = "terraform"
+provider "azurerm" {
+  features {
+    key_vault {
+      purge_soft_delete_on_destroy = false
     }
   }
 }
 
-module "aws_infrastructure" {
-  source = "../../modules/aws"
+module "azure_infrastructure" {
+  source = "../../modules/azure"
 
-  environment  = "production"
-  region       = var.region
-  cluster_name = "learnflow-production"
+  environment = "production"
+  location    = var.location
 
-  # Production-grade configuration
-  node_desired_size = 3
-  node_min_size     = 3
-  node_max_size     = 10
-  node_instance_types = ["t3.large", "t3.xlarge"]
+  # AKS - Production-grade configuration
+  aks_node_vm_size   = "Standard_D4s_v3"
+  aks_node_count     = 3
+  aks_min_node_count = 3
+  aks_max_node_count = 10
 
-  # Database - Multi-AZ with larger instance
-  db_instance_class = "db.r6g.large"
-  db_instance_count = 2  # Multi-AZ
+  # Database - Zone redundant HA
+  db_sku_name        = "GP_Standard_D2s_v3"
+  db_storage_mb      = 131072  # 128GB
+  db_ha_mode         = "ZoneRedundant"
+  db_admin_password  = var.db_admin_password
 
-  # Redis - Clustered
-  redis_node_type   = "cache.r6g.large"
-  redis_num_nodes   = 2  # With automatic failover
+  # Redis - Standard
+  redis_sku_name   = "Standard"
+  redis_family     = "C"
+  redis_capacity   = 1
+
+  # ACR
+  acr_sku = "Standard"
+
+  tags = {
+    Environment = "production"
+    Project     = "dronacharya"
+    ManagedBy   = "terraform"
+  }
 }
 
 # Outputs
-output "eks_cluster_endpoint" {
-  description = "EKS cluster endpoint"
-  value       = module.aws_infrastructure.eks_cluster_endpoint
+output "aks_cluster_endpoint" {
+  description = "AKS cluster endpoint"
+  value       = module.azure_infrastructure.aks_cluster_endpoint
 }
 
-output "eks_cluster_name" {
-  description = "EKS cluster name"
-  value       = module.aws_infrastructure.eks_cluster_name
+output "aks_cluster_name" {
+  description = "AKS cluster name"
+  value       = module.azure_infrastructure.aks_cluster_name
 }
 
-output "rds_endpoint" {
-  description = "RDS cluster endpoint"
-  value       = module.aws_infrastructure.rds_endpoint
+output "db_endpoint" {
+  description = "PostgreSQL Flexible Server endpoint"
+  value       = module.azure_infrastructure.db_endpoint
   sensitive   = true
 }
 
 output "redis_endpoint" {
-  description = "ElastiCache Redis endpoint"
-  value       = module.aws_infrastructure.redis_endpoint
+  description = "Azure Cache for Redis endpoint"
+  value       = module.azure_infrastructure.redis_endpoint
   sensitive   = true
 }
 
-output "vpc_id" {
-  description = "VPC ID"
-  value       = module.aws_infrastructure.vpc_id
+output "acr_login_server" {
+  description = "ACR login server"
+  value       = module.azure_infrastructure.acr_login_server
 }
