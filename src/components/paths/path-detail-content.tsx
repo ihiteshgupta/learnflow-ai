@@ -39,7 +39,7 @@ export default function LearningPathDetailContent() {
 
   const { data: path, isLoading } = trpc.learningPath.get.useQuery({ slug });
   const { data: progressData } = trpc.learningPath.getProgress.useQuery(
-    { pathId: path?.id! },
+    { pathId: path?.id ?? '' },
     { enabled: !!path?.id }
   );
 

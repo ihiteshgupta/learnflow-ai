@@ -3,8 +3,8 @@
 // where Prometheus handles long-term storage.
 
 let httpRequestsTotal = 0;
-let httpRequestsByMethod: Record<string, number> = {};
-let httpRequestsByStatus: Record<string, number> = {};
+const httpRequestsByMethod: Record<string, number> = {};
+const httpRequestsByStatus: Record<string, number> = {};
 
 export function incrementHttpRequests(method: string, status?: number) {
   httpRequestsTotal++;

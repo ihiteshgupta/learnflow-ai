@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useMemo } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import { trpc } from '@/lib/trpc/client';
@@ -18,7 +18,6 @@ import {
   ArrowLeft,
   CheckCircle2,
   Lock,
-  Play,
   ChevronRight,
   ChevronDown,
   FileText,
@@ -47,19 +46,31 @@ export default function PathLearnContent() {
 
   const { data: path, isLoading: pathLoading } = trpc.learningPath.get.useQuery({ slug });
   const { data: progressData, isLoading: progressLoading } = trpc.learningPath.getProgress.useQuery(
-    { pathId: path?.id! },
+    { pathId: path?.id ?? '' },
     { enabled: !!path?.id }
   );
 
+  // Compute initial expanded course from progress data
+  const defaultExpandedCourseId = useMemo(() => {
+    if (!progressData) return null;
+    const firstIncomplete = progressData.courses.find(c => !c.isCompleted && c.isUnlocked);
+    if (firstIncomplete) return firstIncomplete.courseId;
+    if (progressData.courses.length > 0) return progressData.courses[0].courseId;
+    return null;
+  }, [progressData]);
+
+  // Use user selection if set, otherwise fall back to computed default
+  const activeCourseId = expandedCourseId ?? defaultExpandedCourseId;
+
   // Get the current course to show lessons
   const { data: currentCourse, isLoading: courseLoading } = trpc.course.getCourse.useQuery(
-    { courseId: expandedCourseId! },
-    { enabled: !!expandedCourseId }
+    { courseId: activeCourseId ?? '' },
+    { enabled: !!activeCourseId }
   );
 
   // Get the selected lesson
   const { data: lessonData, isLoading: lessonLoading } = trpc.course.getLesson.useQuery(
-    { lessonId: selectedLesson! },
+    { lessonId: selectedLesson ?? '' },
     { enabled: !!selectedLesson }
   );
 
@@ -69,26 +80,14 @@ export default function PathLearnContent() {
         toast({ title: 'Lesson completed!', description: 'Great progress!' });
       }
       utils.learningPath.getProgress.invalidate({ pathId: path?.id });
-      utils.course.getCourse.invalidate({ courseId: expandedCourseId! });
-      utils.course.getLesson.invalidate({ lessonId: selectedLesson! });
+      if (activeCourseId) utils.course.getCourse.invalidate({ courseId: activeCourseId });
+      if (selectedLesson) utils.course.getLesson.invalidate({ lessonId: selectedLesson });
       utils.gamification.getProfile.invalidate();
     },
     onError: (error) => {
       toast({ title: 'Error', description: error.message, variant: 'destructive' });
     },
   });
-
-  // Auto-expand first incomplete course on load
-  useEffect(() => {
-    if (progressData && !expandedCourseId) {
-      const firstIncomplete = progressData.courses.find(c => !c.isCompleted && c.isUnlocked);
-      if (firstIncomplete) {
-        setExpandedCourseId(firstIncomplete.courseId);
-      } else if (progressData.courses.length > 0) {
-        setExpandedCourseId(progressData.courses[0].courseId);
-      }
-    }
-  }, [progressData, expandedCourseId]);
 
   const isLoading = pathLoading || progressLoading;
 
@@ -173,7 +172,7 @@ export default function PathLearnContent() {
               <ScrollArea className="h-[calc(100vh-280px)]">
                 <div className="p-4 pt-0 space-y-2">
                   {progressData.courses.map((courseItem, idx) => {
-                    const isExpanded = expandedCourseId === courseItem.courseId;
+                    const isExpanded = activeCourseId === courseItem.courseId;
                     const isCompleted = courseItem.isCompleted;
                     const isUnlocked = courseItem.isUnlocked;
 
