@@ -1,3 +1,7 @@
+[![Live](https://img.shields.io/badge/Live-www.dronacharya.app-1e1b4b?style=flat-square)](https://www.dronacharya.app)
+[![CI](https://img.shields.io/github/actions/workflow/status/hiteshgupta/dronacharya/ci.yml?branch=main&style=flat-square&label=CI)](https://github.com/hiteshgupta/dronacharya/actions)
+[![License](https://img.shields.io/badge/License-Proprietary-red?style=flat-square)]()
+
 # Dronacharya (द्रोणाचार्य)
 
 > AI that teaches like a Guru
@@ -111,6 +115,11 @@ src/
 
 ## Deployment
 
+```
+Production: https://www.dronacharya.app
+Staging: deployed via GitHub Actions on push to main
+```
+
 ```bash
 # Docker
 docker build -t dronacharya .
@@ -119,6 +128,8 @@ docker run -p 3000:3000 dronacharya
 # Kubernetes
 kubectl apply -f k8s/
 ```
+
+Production is deployed on Azure App Service.
 
 Health endpoints:
 - `GET /api/health` — Liveness probe
