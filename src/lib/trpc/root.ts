@@ -10,6 +10,8 @@ import { adminRouter } from './routers/admin';
 import { notificationsRouter } from './routers/notifications';
 import { analyticsRouter } from './routers/analytics';
 import { searchRouter } from './routers/search';
+import { betaRouter } from './routers/beta';
+import { feedbackRouter } from './routers/feedback';
 
 export const appRouter = router({
   user: userRouter,
@@ -23,6 +25,8 @@ export const appRouter = router({
   notifications: notificationsRouter,
   analytics: analyticsRouter,
   search: searchRouter,
+  beta: betaRouter,
+  feedback: feedbackRouter,
 });
 
 export type AppRouter = typeof appRouter;

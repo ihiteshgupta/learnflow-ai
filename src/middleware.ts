@@ -28,6 +28,15 @@ export default auth((req) => {
   // Count every request that passes through middleware
   incrementHttpRequests(req.method);
 
+  // Root route: public landing page for guests, dashboard for logged-in users
+  if (pathname === '/') {
+    if (req.auth?.user) {
+      return NextResponse.redirect(new URL('/dashboard', req.url));
+    }
+
+    return NextResponse.next();
+  }
+
   // Allow always-public routes
   for (const prefix of alwaysPublicPrefixes) {
     if (pathname.startsWith(prefix)) {

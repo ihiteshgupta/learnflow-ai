@@ -2,7 +2,6 @@
 
 import { trpc } from '@/lib/trpc/client';
 import { useOnboardingStore } from '@/stores/onboarding-store';
-import { MainLayout } from '@/components/layout';
 import { OnboardingWizard } from '@/components/onboarding';
 import { XPDisplay, StreakDisplay, LevelProgress } from '@/components/gamification';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -40,8 +39,7 @@ export default function Dashboard() {
   };
 
   return (
-    <MainLayout>
-      {/* Onboarding wizard for new users */}
+    <>
       <OnboardingWizard open={!onboardingComplete} />
 
       <div className="space-y-6 sm:space-y-8">
@@ -294,6 +292,6 @@ export default function Dashboard() {
           </div>
         )}
       </div>
-    </MainLayout>
+    </>
   );
 }

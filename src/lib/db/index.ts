@@ -26,6 +26,7 @@ const createMockDb = () => ({
     assessments: { findFirst: async () => null, findMany: async () => [] },
     aiSessions: { findFirst: async () => null, findMany: async () => [] },
     aiMessages: { findFirst: async () => null, findMany: async () => [] },
+    feedback: { findFirst: async () => null, findMany: async () => [] },
   },
   insert: () => ({ values: () => ({ returning: async () => [], onConflictDoUpdate: () => ({ returning: async () => [] }) }) }),
   update: () => ({ set: () => ({ where: () => ({ returning: async () => [] }) }) }),

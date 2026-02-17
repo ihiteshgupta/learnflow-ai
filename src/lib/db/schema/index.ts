@@ -7,3 +7,5 @@ export * from './certifications';
 export * from './ai';
 export * from './learning-paths';
 export * from './notifications';
+export * from './beta';
+export * from './feedback';

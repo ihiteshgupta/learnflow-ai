@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { TRPCProvider } from "@/lib/trpc/provider";
+import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import { env } from "@/lib/env";
 // Validate environment variables at startup
 import "@/lib/startup";
@@ -77,7 +78,9 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <TRPCProvider>{children}</TRPCProvider>
+        <TRPCProvider>
+          <AnalyticsProvider>{children}</AnalyticsProvider>
+        </TRPCProvider>
       </body>
     </html>
   );
