@@ -30,13 +30,12 @@ Stages:
   deploy  Docker build, push to ACR, deploy to App Service
   all     Run all stages in sequence (default)
 
-Environment variables (set before running, or auto-generated):
+Environment variables (auto-generated if not set):
   TF_VAR_postgres_admin_password
-  TF_VAR_anthropic_api_key
-  TF_VAR_openai_api_key
   TF_VAR_nextauth_secret
-  TF_VAR_qdrant_url
-  TF_VAR_qdrant_api_key
+
+Note: Azure OpenAI API key is read from the provisioned resource after apply.
+      ChromaDB is provisioned as an Azure Container Instance via Terraform.
 EOF
 }
 
@@ -77,13 +76,6 @@ ensure_secrets() {
     export TF_VAR_nextauth_secret="$(openssl rand -base64 32)"
     log_warn "Generated TF_VAR_nextauth_secret"
   fi
-
-  for var in TF_VAR_anthropic_api_key TF_VAR_openai_api_key TF_VAR_qdrant_url TF_VAR_qdrant_api_key; do
-    if [[ -z "${!var:-}" ]]; then
-      log_error "$var is not set"
-      exit 1
-    fi
-  done
 
   log_success "All required variables set"
 }

@@ -19,10 +19,8 @@ export const aiConfig = {
 };
 
 export const ragConfig = {
-  qdrantUrl: env.QDRANT_URL,
-  qdrantApiKey: env.QDRANT_API_KEY,
+  chromaUrl: env.CHROMADB_URL,
   collectionName: 'course_content',
-  embeddingModel: 'text-embedding-3-large',
   chunkSize: 1000,
   chunkOverlap: 200,
   topK: 5,

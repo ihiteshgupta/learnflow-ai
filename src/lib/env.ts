@@ -17,7 +17,7 @@ const skipValidation = process.env.SKIP_ENV_VALIDATION === 'true';
 const baseSchema = z.object({
   NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
   NEXT_PUBLIC_APP_URL: z.string().url().optional().default('http://localhost:3000'),
-  AI_MODEL_PRIMARY: z.string().default('claude-sonnet-4-20250514'),
+  AI_MODEL_PRIMARY: z.string().default('gpt-4o'),
   AI_MODEL_FALLBACK: z.string().default('gpt-4o'),
   DATABASE_POOL_SIZE: z.coerce.number().positive().max(100).default(10),
   MAX_AI_REQUESTS_PER_MINUTE: z.coerce.number().positive().max(1000).default(isProduction ? 30 : 60),
@@ -33,10 +33,12 @@ const developmentSchema = baseSchema.extend({
   REDIS_URL: z.string().optional(),
   NEXTAUTH_SECRET: z.string().optional(),
   NEXTAUTH_URL: z.string().url().optional().default('http://localhost:3000'),
-  ANTHROPIC_API_KEY: z.string().optional(),
-  OPENAI_API_KEY: z.string().optional(),
-  QDRANT_URL: z.string().optional().default('http://localhost:6333'),
-  QDRANT_API_KEY: z.string().optional(),
+  AZURE_OPENAI_API_KEY: z.string().default(''),
+  AZURE_OPENAI_ENDPOINT: z.string().default('http://localhost'),
+  AZURE_OPENAI_DEPLOYMENT_NAME: z.string().default('gpt-4o'),
+  AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT: z.string().default('text-embedding-3-large'),
+  AZURE_OPENAI_API_VERSION: z.string().default('2024-12-01-preview'),
+  CHROMADB_URL: z.string().default('http://localhost:8000'),
   PISTON_URL: z.string().optional(),
 });
 
@@ -61,21 +63,12 @@ const productionSchema = baseSchema.extend({
   NEXTAUTH_URL: z.string().url('NEXTAUTH_URL must be a valid URL in production'),
 
   // AI APIs (CRITICAL - Primary required)
-  ANTHROPIC_API_KEY: z.string().min(1, 'ANTHROPIC_API_KEY is required in production').refine(
-    (val) => val.startsWith('sk-ant-'),
-    { message: 'ANTHROPIC_API_KEY must start with "sk-ant-"' }
-  ),
-
-  // OpenAI API (Optional fallback)
-  OPENAI_API_KEY: z.string().startsWith('sk-').optional(),
-
-  // Vector Database (CRITICAL - Required for RAG)
-  QDRANT_URL: z.string().min(1, 'QDRANT_URL is required in production').refine(
-    (val) => val.startsWith('http://') || val.startsWith('https://'),
-    { message: 'QDRANT_URL must be a valid HTTP(S) URL' }
-  ),
-
-  QDRANT_API_KEY: z.string().optional(), // Optional for self-hosted
+  AZURE_OPENAI_API_KEY: z.string().min(1, 'AZURE_OPENAI_API_KEY is required in production'),
+  AZURE_OPENAI_ENDPOINT: z.string().url('AZURE_OPENAI_ENDPOINT must be a valid URL in production'),
+  AZURE_OPENAI_DEPLOYMENT_NAME: z.string().default('gpt-4o'),
+  AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT: z.string().default('text-embedding-3-large'),
+  AZURE_OPENAI_API_VERSION: z.string().default('2024-12-01-preview'),
+  CHROMADB_URL: z.string().url().default('http://localhost:8000'),
 
   // Code Sandbox (CRITICAL - Required for code execution)
   PISTON_URL: z.string().min(1, 'PISTON_URL is required in production').refine(
@@ -92,10 +85,12 @@ const testSchema = baseSchema.extend({
   REDIS_URL: z.string().optional(),
   NEXTAUTH_SECRET: z.string().optional(),
   NEXTAUTH_URL: z.string().optional(),
-  ANTHROPIC_API_KEY: z.string().optional(),
-  OPENAI_API_KEY: z.string().optional(),
-  QDRANT_URL: z.string().optional(),
-  QDRANT_API_KEY: z.string().optional(),
+  AZURE_OPENAI_API_KEY: z.string().optional().default(''),
+  AZURE_OPENAI_ENDPOINT: z.string().optional().default('http://localhost'),
+  AZURE_OPENAI_DEPLOYMENT_NAME: z.string().optional().default('gpt-4o'),
+  AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT: z.string().optional().default('text-embedding-3-large'),
+  AZURE_OPENAI_API_VERSION: z.string().optional().default('2024-12-01-preview'),
+  CHROMADB_URL: z.string().optional().default('http://localhost:8000'),
   PISTON_URL: z.string().optional(),
 });
 
@@ -212,9 +207,9 @@ export function logEnvStatus(): void {
   console.log(`  - App URL: ${env.NEXT_PUBLIC_APP_URL || 'Not set'}`);
   console.log(`  - Database: ${env.DATABASE_URL ? env.DATABASE_URL.substring(0, 20) + '...' : '✗ Not configured'}`);
   console.log(`  - Redis: ${env.REDIS_URL ? env.REDIS_URL.substring(0, 20) + '...' : '✗ Not configured'}`);
-  console.log(`  - Anthropic API: ${env.ANTHROPIC_API_KEY ? '✓ Configured' : '✗ Missing'}`);
-  console.log(`  - OpenAI API: ${env.OPENAI_API_KEY ? '✓ Configured' : '✗ Not set'}`);
-  console.log(`  - Qdrant: ${env.QDRANT_URL ? env.QDRANT_URL.substring(0, 30) + '...' : '✗ Not configured'}`);
+  console.log(`  - Azure OpenAI API: ${env.AZURE_OPENAI_API_KEY ? '✓ Configured' : '✗ Missing'}`);
+  console.log(`  - Azure OpenAI Endpoint: ${env.AZURE_OPENAI_ENDPOINT}`);
+  console.log(`  - ChromaDB: ${env.CHROMADB_URL ? env.CHROMADB_URL.substring(0, 30) + '...' : '✗ Not configured'}`);
   console.log(`  - Gamification: ${env.ENABLE_GAMIFICATION ? 'Enabled' : 'Disabled'}`);
   console.log(`  - AI Rate Limit: ${env.MAX_AI_REQUESTS_PER_MINUTE} req/min`);
   console.log('');

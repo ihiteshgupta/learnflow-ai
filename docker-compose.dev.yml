@@ -13,12 +13,12 @@ services:
     environment:
       - DATABASE_URL=postgresql://dronacharya:dronacharya@postgres:5432/dronacharya
       - REDIS_URL=redis://redis:6379
-      - QDRANT_URL=http://qdrant:6333
+      - CHROMADB_URL=http://chromadb:8000
       - NODE_ENV=development
     depends_on:
       - postgres
       - redis
-      - qdrant
+      - chromadb
 
   postgres:
     image: postgres:17-alpine
@@ -36,10 +36,15 @@ services:
     ports:
       - "6379:6379"
 
-  qdrant:
-    image: qdrant/qdrant:latest
+  chromadb:
+    image: chromadb/chroma:latest
     ports:
-      - "6333:6333"
+      - "8000:8000"
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+    volumes:
+      - chromadb_data:/chroma/chroma
 
 volumes:
   postgres_data:
+  chromadb_data:

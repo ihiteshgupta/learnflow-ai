@@ -31,37 +31,38 @@ async function testRagPipeline() {
 
     // Step 2: Index content
     console.log('2. Indexing sample content...');
-    const indexResult = await ragPipeline.indexContent(
-      TEST_CONTENT_ID,
-      sampleContent,
+    await ragPipeline.indexContent([
       {
+        contentId: TEST_CONTENT_ID,
+        content: sampleContent,
         courseId: 'test-course',
         moduleId: 'test-module',
         type: 'lesson',
         title: 'JavaScript Basics',
-      }
-    );
-    console.log(`   ✅ Indexed ${indexResult.indexed} chunks\n`);
+      },
+    ]);
+    console.log('   ✅ Content indexed\n');
 
     // Step 3: Retrieve with query
     console.log('3. Testing retrieval...');
     const query = 'What are the ways to declare variables in JavaScript?';
     console.log(`   Query: "${query}"`);
     const results = await ragPipeline.retrieve(query);
-    console.log(`   ✅ Retrieved content (${results.length} characters)\n`);
+    const combinedText = results.map((r) => r.content).join('\n');
+    console.log(`   ✅ Retrieved ${results.length} chunks\n`);
 
     // Step 4: Verify relevance
     console.log('4. Verifying relevance...');
     const hasRelevantContent =
-      results.includes('let') ||
-      results.includes('const') ||
-      results.includes('var');
+      combinedText.includes('let') ||
+      combinedText.includes('const') ||
+      combinedText.includes('var');
 
     if (hasRelevantContent) {
       console.log('   ✅ Retrieved content is relevant\n');
     } else {
       console.log('   ❌ Retrieved content may not be relevant\n');
-      console.log('   Content preview:', results.slice(0, 200));
+      console.log('   Content preview:', combinedText.slice(0, 200));
     }
 
     // Step 5: Cleanup

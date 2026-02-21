@@ -80,9 +80,9 @@ export function getEnvSummary(): Record<string, string> {
     appUrl: env.NEXT_PUBLIC_APP_URL || 'Not set',
     database: env.DATABASE_URL ? env.DATABASE_URL.substring(0, 20) + '...' : 'Not configured',
     redis: env.REDIS_URL ? env.REDIS_URL.substring(0, 20) + '...' : 'Not configured',
-    anthropicConfigured: env.ANTHROPIC_API_KEY ? 'Yes' : 'No',
-    openaiConfigured: env.OPENAI_API_KEY ? 'Yes' : 'No',
-    qdrant: env.QDRANT_URL ? env.QDRANT_URL.substring(0, 30) + '...' : 'Not configured',
+    azureOpenAI: env.AZURE_OPENAI_API_KEY ? 'Configured' : 'Not configured',
+    azureOpenAIEndpoint: env.AZURE_OPENAI_ENDPOINT ? env.AZURE_OPENAI_ENDPOINT.substring(0, 40) + '...' : 'Not configured',
+    chromadb: env.CHROMADB_URL ? env.CHROMADB_URL.substring(0, 30) + '...' : 'Not configured',
     gamification: env.ENABLE_GAMIFICATION ? 'Enabled' : 'Disabled',
     aiRateLimit: `${env.MAX_AI_REQUESTS_PER_MINUTE} req/min`,
   };

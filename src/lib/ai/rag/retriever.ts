@@ -13,11 +13,11 @@ export async function retrieveContext(
 ): Promise<string> {
   const { courseId, moduleId, lessonId, maxChunks = 5 } = options;
 
-  const context = await ragPipeline.retrieve(
+  const retrieved = await ragPipeline.retrieve(
     query,
-    { courseId, moduleId, lessonId },
-    maxChunks
+    { courseId, moduleId, lessonId, topK: maxChunks }
   );
+  const context = retrieved.map((item) => item.content).join('\n\n---\n\n');
 
   if (!context) {
     return 'No relevant course content found.';
@@ -31,18 +31,18 @@ export async function retrieveForLesson(
   userQuestion: string
 ): Promise<string> {
   // First, get content specific to this lesson
-  const lessonContext = await ragPipeline.retrieve(
+  const lessonContextItems = await ragPipeline.retrieve(
     userQuestion,
-    { lessonId },
-    3
+    { lessonId, topK: 3 }
   );
+  const lessonContext = lessonContextItems.map((item) => item.content).join('\n\n---\n\n');
 
   // Then, get broader course context
-  const courseContext = await ragPipeline.retrieve(
+  const courseContextItems = await ragPipeline.retrieve(
     userQuestion,
-    {},
-    2
+    { topK: 2 }
   );
+  const courseContext = courseContextItems.map((item) => item.content).join('\n\n---\n\n');
 
   const combined = [lessonContext, courseContext].filter(Boolean).join('\n\n---\n\n');
 

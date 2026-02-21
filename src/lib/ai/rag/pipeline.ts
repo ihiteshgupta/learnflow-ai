@@ -1,126 +1,120 @@
-import { QdrantClient } from '@qdrant/js-client-rest';
-import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { getEmbeddings } from '../models';
 import { ragConfig } from '../config';
+import { ChromaClient, Collection, IncludeEnum } from 'chromadb';
 
-// Lazy-loaded Qdrant client
-let _qdrant: QdrantClient | null = null;
-function getQdrant(): QdrantClient {
-  if (!_qdrant) {
-    _qdrant = new QdrantClient({
-      url: ragConfig.qdrantUrl,
-      apiKey: ragConfig.qdrantApiKey,
+interface ContentItem {
+  contentId: string;
+  content: string;
+  chunkIndex?: number;
+  courseId?: string;
+  moduleId?: string;
+  lessonId?: string;
+  type?: string;
+  title?: string;
+}
+
+interface RetrievedContent {
+  content: string;
+  score: number;
+  metadata: Record<string, string>;
+}
+
+interface RetrieveOptions {
+  courseId?: string;
+  moduleId?: string;
+  lessonId?: string;
+  topK?: number;
+}
+
+let _chroma: ChromaClient | null = null;
+let _collection: Collection | null = null;
+
+function getChroma(): ChromaClient {
+  if (!_chroma) {
+    const config = ragConfig as { chromaUrl: string };
+    _chroma = new ChromaClient({
+      path: config.chromaUrl,
     });
   }
-  return _qdrant;
+  return _chroma;
+}
+
+async function initialize(): Promise<void> {
+  const chroma = getChroma();
+  _collection = await chroma.getOrCreateCollection({
+    name: ragConfig.collectionName,
+    metadata: { 'hnsw:space': 'cosine' },
+  });
+}
+
+async function getCollection(): Promise<Collection> {
+  if (!_collection) await initialize();
+  return _collection!;
 }
 
 export const ragPipeline = {
-  /**
-   * Initialize the collection if it doesn't exist
-   */
   async initialize() {
-    try {
-      await getQdrant().getCollection(ragConfig.collectionName);
-    } catch {
-      await getQdrant().createCollection(ragConfig.collectionName, {
-        vectors: {
-          size: 3072, // text-embedding-3-large dimension
-          distance: 'Cosine',
-        },
-      });
-    }
+    await initialize();
   },
 
-  /**
-   * Index course content into the vector database
-   */
-  async indexContent(
-    contentId: string,
-    content: string,
-    metadata: {
-      courseId: string;
-      moduleId?: string;
-      lessonId?: string;
-      type: string;
-      title: string;
-    }
-  ) {
-    const splitter = new RecursiveCharacterTextSplitter({
-      chunkSize: ragConfig.chunkSize,
-      chunkOverlap: ragConfig.chunkOverlap,
+  async indexContent(items: ContentItem[]): Promise<void> {
+    const collection = await getCollection();
+    const embeddings = await getEmbeddings().embedDocuments(items.map((i) => i.content));
+    const ids = items.map((item, i) => `${item.contentId}-${item.chunkIndex ?? i}`);
+
+    await collection.upsert({
+      ids,
+      embeddings,
+      documents: items.map((i) => i.content),
+      metadatas: items.map((i) => ({
+        contentId: i.contentId,
+        chunkIndex: String(i.chunkIndex ?? 0),
+        courseId: i.courseId ?? '',
+        moduleId: i.moduleId ?? '',
+        lessonId: i.lessonId ?? '',
+        type: i.type ?? 'content',
+        title: i.title ?? '',
+      })),
     });
-
-    const chunks = await splitter.splitText(content);
-    const vectors = await getEmbeddings().embedDocuments(chunks);
-
-    const points = chunks.map((chunk: string, i: number) => ({
-      id: `${contentId}-${i}`,
-      vector: vectors[i],
-      payload: {
-        content: chunk,
-        contentId,
-        chunkIndex: i,
-        ...metadata,
-      },
-    }));
-
-    await getQdrant().upsert(ragConfig.collectionName, {
-      wait: true,
-      points,
-    });
-
-    return { indexed: chunks.length };
   },
 
   /**
    * Retrieve relevant content for a query
    */
-  async retrieve(
-    query: string,
-    filters?: {
-      courseId?: string;
-      moduleId?: string;
-      lessonId?: string;
-    },
-    limit: number = ragConfig.topK
-  ): Promise<string> {
-    const queryVector = await getEmbeddings().embedQuery(query);
+  async retrieve(query: string, options?: RetrieveOptions): Promise<RetrievedContent[]> {
+    const collection = await getCollection();
+    const queryEmbedding = await getEmbeddings().embedQuery(query);
 
-    const filter: Record<string, unknown> = {};
-    if (filters?.courseId) {
-      filter.must = [{ key: 'courseId', match: { value: filters.courseId } }];
-    }
-    if (filters?.moduleId) {
-      filter.must = filter.must || [];
-      (filter.must as unknown[]).push({ key: 'moduleId', match: { value: filters.moduleId } });
-    }
-    if (filters?.lessonId) {
-      filter.must = filter.must || [];
-      (filter.must as unknown[]).push({ key: 'lessonId', match: { value: filters.lessonId } });
-    }
+    const whereFilter: Record<string, string> = {};
+    if (options?.courseId) whereFilter.courseId = options.courseId;
+    if (options?.moduleId) whereFilter.moduleId = options.moduleId;
+    if (options?.lessonId) whereFilter.lessonId = options.lessonId;
 
-    const results = await getQdrant().search(ragConfig.collectionName, {
-      vector: queryVector,
-      filter: Object.keys(filter).length > 0 ? filter : undefined,
-      limit,
-      with_payload: true,
+    const results = await collection.query({
+      queryEmbeddings: [queryEmbedding],
+      nResults: options?.topK ?? ragConfig.topK,
+      where: Object.keys(whereFilter).length > 0 ? whereFilter : undefined,
+      include: [IncludeEnum.Documents, IncludeEnum.Metadatas, IncludeEnum.Distances],
     });
 
-    return results
-      .map((r) => r.payload?.content as string)
-      .filter(Boolean)
-      .join('\n\n---\n\n');
+    const docs = results.documents?.[0] ?? [];
+    const metas = results.metadatas?.[0] ?? [];
+    const distances = results.distances?.[0] ?? [];
+
+    return docs.map((doc, i) => ({
+      content: doc ?? '',
+      score: 1 - (distances[i] ?? 0),
+      metadata: (metas[i] ?? {}) as Record<string, string>,
+    }));
   },
 
   /**
    * Delete content from the index
    */
-  async deleteContent(contentId: string) {
-    await getQdrant().delete(ragConfig.collectionName, {
-      filter: {
-        must: [{ key: 'contentId', match: { value: contentId } }],
-      },
+  async deleteContent(contentId: string): Promise<void> {
+    const collection = await getCollection();
+    await collection.delete({
+      where: { contentId },
     });
   },
 };

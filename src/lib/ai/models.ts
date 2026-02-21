@@ -1,47 +1,51 @@
-import { ChatAnthropic } from '@langchain/anthropic';
-import { ChatOpenAI } from '@langchain/openai';
-import { OpenAIEmbeddings } from '@langchain/openai';
+import { AzureChatOpenAI, AzureOpenAIEmbeddings } from '@langchain/openai';
 import { aiConfig, ragConfig } from './config';
 import { env } from '../env';
 
 // Lazy-loaded model instances (only created when first accessed)
-let _claudeModel: ChatAnthropic | null = null;
-let _openaiModel: ChatOpenAI | null = null;
-let _embeddings: OpenAIEmbeddings | null = null;
+let _claudeModel: AzureChatOpenAI | null = null;
+let _openaiModel: AzureChatOpenAI | null = null;
+let _embeddings: AzureOpenAIEmbeddings | null = null;
 
-export function getClaudeModel(): ChatAnthropic {
+export function getClaudeModel(): AzureChatOpenAI {
   if (!_claudeModel) {
-    _claudeModel = new ChatAnthropic({
-      model: aiConfig.primaryModel,
+    _claudeModel = new AzureChatOpenAI({
+      azureOpenAIApiKey: env.AZURE_OPENAI_API_KEY,
+      azureOpenAIEndpoint: env.AZURE_OPENAI_ENDPOINT,
+      azureOpenAIApiDeploymentName: env.AZURE_OPENAI_DEPLOYMENT_NAME,
+      azureOpenAIApiVersion: env.AZURE_OPENAI_API_VERSION,
       maxTokens: aiConfig.maxTokens,
-      anthropicApiKey: env.ANTHROPIC_API_KEY,
     });
   }
   return _claudeModel;
 }
 
-export function getOpenAIModel(): ChatOpenAI {
+export function getOpenAIModel(): AzureChatOpenAI {
   if (!_openaiModel) {
-    if (!env.OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is not configured');
+    if (!env.AZURE_OPENAI_API_KEY) {
+      throw new Error('AZURE_OPENAI_API_KEY is not configured');
     }
-    _openaiModel = new ChatOpenAI({
-      model: aiConfig.fallbackModel,
+    _openaiModel = new AzureChatOpenAI({
+      azureOpenAIApiKey: env.AZURE_OPENAI_API_KEY,
+      azureOpenAIEndpoint: env.AZURE_OPENAI_ENDPOINT,
+      azureOpenAIApiDeploymentName: env.AZURE_OPENAI_DEPLOYMENT_NAME,
+      azureOpenAIApiVersion: env.AZURE_OPENAI_API_VERSION,
       maxTokens: aiConfig.maxTokens,
-      openAIApiKey: env.OPENAI_API_KEY,
     });
   }
   return _openaiModel;
 }
 
-export function getEmbeddings(): OpenAIEmbeddings {
+export function getEmbeddings(): AzureOpenAIEmbeddings {
   if (!_embeddings) {
-    if (!env.OPENAI_API_KEY) {
-      throw new Error('OPENAI_API_KEY is required for embeddings');
+    if (!env.AZURE_OPENAI_API_KEY) {
+      throw new Error('AZURE_OPENAI_API_KEY is required for embeddings');
     }
-    _embeddings = new OpenAIEmbeddings({
-      model: ragConfig.embeddingModel,
-      openAIApiKey: env.OPENAI_API_KEY,
+    _embeddings = new AzureOpenAIEmbeddings({
+      azureOpenAIApiKey: env.AZURE_OPENAI_API_KEY,
+      azureOpenAIEndpoint: env.AZURE_OPENAI_ENDPOINT,
+      azureOpenAIApiDeploymentName: env.AZURE_OPENAI_EMBEDDINGS_DEPLOYMENT,
+      azureOpenAIApiVersion: env.AZURE_OPENAI_API_VERSION,
     });
   }
   return _embeddings;
@@ -73,15 +77,21 @@ export function getModelForAgent(
   const temperature = aiConfig.temperature[agentType as keyof typeof aiConfig.temperature] || 0.7;
 
   if (preferClaude) {
-    return new ChatAnthropic({
-      model: aiConfig.primaryModel,
+    return new AzureChatOpenAI({
+      azureOpenAIApiKey: env.AZURE_OPENAI_API_KEY,
+      azureOpenAIEndpoint: env.AZURE_OPENAI_ENDPOINT,
+      azureOpenAIApiDeploymentName: env.AZURE_OPENAI_DEPLOYMENT_NAME,
+      azureOpenAIApiVersion: env.AZURE_OPENAI_API_VERSION,
       maxTokens: aiConfig.maxTokens,
       temperature,
     });
   }
 
-  return new ChatOpenAI({
-    model: aiConfig.fallbackModel,
+  return new AzureChatOpenAI({
+    azureOpenAIApiKey: env.AZURE_OPENAI_API_KEY,
+    azureOpenAIEndpoint: env.AZURE_OPENAI_ENDPOINT,
+    azureOpenAIApiDeploymentName: env.AZURE_OPENAI_DEPLOYMENT_NAME,
+    azureOpenAIApiVersion: env.AZURE_OPENAI_API_VERSION,
     maxTokens: aiConfig.maxTokens,
     temperature,
   });

@@ -26,6 +26,9 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   output: "standalone",
+  // chromadb has optional peer deps (cohere-ai, openai, etc.) that Next.js
+  // would otherwise try to bundle. Mark the whole package as server-external.
+  serverExternalPackages: ["chromadb"],
   async headers() {
     return [
       {
