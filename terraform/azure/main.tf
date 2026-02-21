@@ -38,6 +38,11 @@ variable "domain_name" {
   default     = "dronacharya.app"
 }
 
+variable "postgres_location" {
+  description = "Location for PostgreSQL Flexible Server (may differ from main location due to quota restrictions)"
+  default     = "North Europe"
+}
+
 variable "postgres_admin_password" {
   sensitive = true
 }
@@ -88,8 +93,8 @@ resource "azurerm_cognitive_deployment" "gpt4o" {
     version = "2024-11-20"
   }
 
-  sku {
-    name     = "Standard"
+  scale {
+    type     = "Standard"
     capacity = 10 # 10K tokens-per-minute
   }
 }
@@ -104,8 +109,8 @@ resource "azurerm_cognitive_deployment" "embeddings" {
     version = "1"
   }
 
-  sku {
-    name     = "Standard"
+  scale {
+    type     = "Standard"
     capacity = 10
   }
 }
@@ -139,7 +144,7 @@ resource "azurerm_container_group" "chromadb" {
 
   container {
     name   = "chromadb"
-    image  = "chromadb/chroma:latest"
+    image  = "ghcr.io/chroma-core/chroma:latest"
     cpu    = "0.5"
     memory = "1.5"
 
@@ -223,9 +228,9 @@ resource "azurerm_linux_web_app" "main" {
 # ---------------------------------------------------------------------------
 
 resource "azurerm_postgresql_flexible_server" "main" {
-  name                   = "${local.prefix}-postgres"
+  name                   = "drona-db-prod"
   resource_group_name    = azurerm_resource_group.main.name
-  location               = azurerm_resource_group.main.location
+  location               = var.postgres_location
   version                = "16"
   administrator_login    = "dronacharyaadmin"
   administrator_password = var.postgres_admin_password
@@ -262,7 +267,7 @@ resource "azurerm_redis_cache" "main" {
   capacity            = 0
   family              = "C"
   sku_name            = "Basic" # Basic C0 tier to keep costs low
-  enable_non_ssl_port = false
+  non_ssl_port_enabled = false
   minimum_tls_version = "1.2"
 
   redis_configuration {}
@@ -310,13 +315,9 @@ resource "azurerm_dns_txt_record" "asuid_api" {
   }
 }
 
-resource "azurerm_dns_a_record" "apex" {
-  name                = "@"
-  zone_name           = azurerm_dns_zone.main.name
-  resource_group_name = azurerm_resource_group.main.name
-  ttl                 = 3600
-  target_resource_id  = azurerm_linux_web_app.main.id
-}
+# Apex A record requires the App Service outbound IP (see: az webapp show --query outboundIpAddresses)
+# The alias-to-App-Service feature is not available on all subscription tiers.
+# Primary domain is www.dronacharya.app via CNAME below.
 
 resource "azurerm_dns_cname_record" "www" {
   name                = "www"
