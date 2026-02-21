@@ -32,28 +32,19 @@ export default function Dashboard() {
     'machine-learning': <Zap className="h-6 w-6" />,
   };
 
-  const domainColors: Record<string, string> = {
-    python: 'from-emerald-500 to-cyan-500',
-    'data-science': 'from-violet-500 to-purple-500',
-    'machine-learning': 'from-amber-500 to-rose-500',
-  };
-
   return (
     <>
       <OnboardingWizard open={!onboardingComplete} />
 
-      <div className="space-y-6 sm:space-y-8">
+      <div className="animate-page-entrance space-y-6 sm:space-y-8">
         {/* Welcome Header */}
         <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold tracking-tight">
-              Welcome back
-              {profile && (
-                <span className="gradient-text animate-shimmer">, Learner!</span>
-              )}
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight">
+              Good morning{profile ? ', Learner' : ''}!
             </h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Continue your learning journey and level up your skills
+            <p className="text-sm text-muted-foreground mt-1">
+              {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })}
             </p>
           </div>
           <div className="flex items-center gap-2 sm:gap-3 lg:hidden">
@@ -67,12 +58,12 @@ export default function Dashboard() {
         </div>
 
         {/* Stats Cards */}
-        <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
-          <Card className="card-hover border shadow-sm hover:shadow-md transition-all duration-300">
+        <div className="animate-card-entrance grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 sm:px-6">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Level</CardTitle>
-              <div className="p-1.5 sm:p-2 rounded-lg gradient-brand">
-                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-primary/10 text-primary">
+                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </CardHeader>
             <CardContent className="px-4 sm:px-6">
@@ -80,7 +71,7 @@ export default function Dashboard() {
               <div className="flex items-center gap-1.5 sm:gap-2 mt-1">
                 <div className="flex-1 h-1.5 rounded-full bg-muted overflow-hidden">
                   <div
-                    className="h-full rounded-full gradient-brand transition-all duration-500"
+                    className="h-full rounded-full bg-primary transition-all duration-500"
                     style={{ width: `${profile?.levelProgress?.percentage || 0}%` }}
                   />
                 </div>
@@ -91,11 +82,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="card-hover border shadow-sm hover:shadow-md transition-all duration-300">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 sm:px-6">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Total XP</CardTitle>
-              <div className="p-1.5 sm:p-2 rounded-lg gradient-xp">
-                <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-amber/15 text-amber">
+                <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </CardHeader>
             <CardContent className="px-4 sm:px-6">
@@ -109,11 +100,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="card-hover border shadow-sm hover:shadow-md transition-all duration-300">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 sm:px-6">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Streak</CardTitle>
-              <div className="p-1.5 sm:p-2 rounded-lg bg-gradient-to-br from-rose to-rose-600">
-                <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-rose/15 text-rose">
+                <Target className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </CardHeader>
             <CardContent className="px-4 sm:px-6">
@@ -124,11 +115,11 @@ export default function Dashboard() {
             </CardContent>
           </Card>
 
-          <Card className="card-hover border shadow-sm hover:shadow-md transition-all duration-300">
+          <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 px-4 sm:px-6">
               <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Badges</CardTitle>
-              <div className="p-1.5 sm:p-2 rounded-lg gradient-success">
-                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-white" />
+              <div className="p-1.5 sm:p-2 rounded-lg bg-emerald/15 text-emerald">
+                <Trophy className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
               </div>
             </CardHeader>
             <CardContent className="px-4 sm:px-6">
@@ -145,8 +136,7 @@ export default function Dashboard() {
 
         {/* Level Progress */}
         {profile && (
-          <Card className="border shadow-sm overflow-hidden relative">
-            <div className="absolute top-0 left-0 right-0 h-1.5 gradient-brand shadow-sm" />
+          <Card>
             <CardHeader>
               <div className="flex items-center gap-2">
                 <Sparkles className="h-5 w-5 text-primary" />
@@ -197,20 +187,16 @@ export default function Dashboard() {
               {domains?.map((domain) => (
                 <Card
                   key={domain.id}
-                  className="card-hover cursor-pointer group border shadow-sm hover:shadow-lg overflow-hidden transition-all duration-300 hover:border-primary/20"
+                  className="border shadow-sm cursor-pointer overflow-hidden"
                 >
                   <CardHeader className="px-4 sm:px-6">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-                        <div className={cn(
-                          'p-2 sm:p-3 rounded-lg sm:rounded-xl bg-gradient-to-br text-white shadow-lg shrink-0',
-                          'transition-transform duration-300 group-hover:scale-110',
-                          domainColors[domain.slug] || 'from-primary to-cyan'
-                        )}>
+                        <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-primary/10 text-primary shrink-0">
                           {domainIcons[domain.slug] || <BookOpen className="h-5 w-5 sm:h-6 sm:w-6" />}
                         </div>
                         <div className="min-w-0">
-                          <CardTitle className="text-base sm:text-lg group-hover:text-primary transition-colors truncate">
+                          <CardTitle className="text-base sm:text-lg truncate">
                             {domain.name}
                           </CardTitle>
                           <CardDescription className="line-clamp-1 text-xs sm:text-sm">
@@ -227,7 +213,7 @@ export default function Dashboard() {
                         <BookOpen className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                         <span>Multiple tracks</span>
                       </div>
-                      <Button className="btn-shine gradient-brand text-white border-0 shadow-md hover:shadow-lg transition-all duration-300">
+                      <Button>
                         Start Learning
                       </Button>
                     </div>
@@ -252,25 +238,18 @@ export default function Dashboard() {
                 <Card
                   key={achievement.id}
                   className={cn(
-                    'card-hover border shadow-sm hover:shadow-md relative overflow-hidden transition-all duration-300',
-                    !achievement.earned && 'opacity-60 grayscale hover:opacity-75'
+                    !achievement.earned && 'opacity-60 grayscale'
                   )}
                 >
-                  {achievement.earned && (
-                    <div className="absolute top-0 left-0 right-0 h-1 gradient-success" />
-                  )}
                   <CardHeader className="pb-2">
                     <div className="flex items-center gap-3">
                       <div className={cn(
                         'p-2.5 rounded-xl',
                         achievement.earned
-                          ? 'bg-amber/20 text-amber'
+                          ? 'bg-amber/15 text-amber'
                           : 'bg-muted text-muted-foreground'
                       )}>
-                        <Trophy className={cn(
-                          'h-5 w-5',
-                          achievement.earned && 'animate-float'
-                        )} />
+                        <Trophy className="h-5 w-5" />
                       </div>
                       <CardTitle className="text-sm">{achievement.name}</CardTitle>
                     </div>
@@ -278,9 +257,10 @@ export default function Dashboard() {
                   <CardContent>
                     <p className="text-xs text-muted-foreground mb-3">{achievement.description}</p>
                     <Badge
-                      variant={achievement.earned ? 'default' : 'outline'}
+                      variant={achievement.earned ? 'secondary' : 'outline'}
                       className={cn(
-                        achievement.earned && 'gradient-success text-white border-0'
+                        achievement.earned &&
+                          'bg-emerald/15 text-emerald'
                       )}
                     >
                       {achievement.earned ? 'Earned' : `+${achievement.xpReward} XP`}

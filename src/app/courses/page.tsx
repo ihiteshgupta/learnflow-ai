@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { PageHeader } from '@/components/brand';
 import {
   BookOpen,
   Brain,
@@ -28,9 +29,9 @@ const domainIcons: Record<string, React.ReactNode> = {
 };
 
 const domainColors: Record<string, string> = {
-  python: 'from-emerald-500 to-cyan-500',
-  'data-science': 'from-violet-500 to-purple-500',
-  'machine-learning': 'from-amber-500 to-rose-500',
+  python: 'bg-forest/20 text-forest',
+  'data-science': 'bg-primary/15 text-primary',
+  'machine-learning': 'bg-gold/20 text-gold',
 };
 
 export default function CoursesPage() {
@@ -42,31 +43,36 @@ export default function CoursesPage() {
     selectedDomain ? { domainId: selectedDomain } : undefined
   );
 
+  const filteredDomains = domains?.filter((d) =>
+    d.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+  const filteredTracks = tracks?.filter(
+    (t) =>
+      t.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (t.description ?? '').toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <MainLayout>
       <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Courses</h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Explore learning tracks and start building your skills
-            </p>
+        <PageHeader
+          title="Course Catalog"
+          description="Master Python, Data Science, and AI/ML with structured learning paths"
+        />
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1 sm:flex-initial">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search courses..."
+              className="pl-10 w-full sm:w-64"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
-          <div className="flex items-center gap-2">
-            <div className="relative flex-1 sm:flex-initial">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search courses..."
-                className="pl-10 w-full sm:w-64"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <Button variant="outline" size="icon" className="shrink-0">
-              <Filter className="h-4 w-4" />
-            </Button>
-          </div>
+          <Button variant="outline" size="icon" className="shrink-0">
+            <Filter className="h-4 w-4" />
+          </Button>
         </div>
 
         {/* Domain Tabs */}
@@ -78,7 +84,7 @@ export default function CoursesPage() {
             {domains?.map((domain) => (
               <TabsTrigger
                 key={domain.id}
-                value={domain.slug}
+                value={domain.id}
                 onClick={() => setSelectedDomain(domain.id)}
                 className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm whitespace-nowrap"
               >
@@ -94,7 +100,7 @@ export default function CoursesPage() {
               <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
                 {domainsLoading ? (
                   [...Array(3)].map((_, i) => (
-                    <Card key={i} className="animate-pulse border-0 shadow-md">
+                    <Card key={i} className="animate-pulse ">
                       <CardHeader>
                         <div className="h-12 w-12 rounded-xl bg-muted" />
                         <div className="h-5 w-32 bg-muted rounded mt-4" />
@@ -103,34 +109,35 @@ export default function CoursesPage() {
                     </Card>
                   ))
                 ) : (
-                  domains?.map((domain) => (
-                    <Card
+                  filteredDomains?.map((domain) => (
+                    <button
                       key={domain.id}
-                      className="card-hover cursor-pointer group border-0 shadow-md"
+                      className="w-full text-left"
                       onClick={() => setSelectedDomain(domain.id)}
                     >
-                      <CardHeader>
-                        <div className={cn(
-                          'p-3 rounded-xl bg-gradient-to-br text-white shadow-lg w-fit',
-                          'transition-transform duration-300 group-hover:scale-110',
-                          domainColors[domain.slug] || 'from-primary to-cyan'
-                        )}>
-                          {domainIcons[domain.slug] || <BookOpen className="h-6 w-6" />}
-                        </div>
-                        <CardTitle className="mt-4 group-hover:text-primary transition-colors">
-                          {domain.name}
-                        </CardTitle>
-                        <CardDescription>{domain.description}</CardDescription>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                          <span className="flex items-center gap-1">
-                            <BookOpen className="h-4 w-4" />
-                            {tracks?.filter(t => t.domain?.id === domain.id).length ?? 0} tracks
-                          </span>
-                        </div>
-                      </CardContent>
-                    </Card>
+                      <Card className="card-hover group h-full">
+                        <CardHeader>
+                          <div className={cn(
+                            'p-3 rounded-xl w-fit transition-transform duration-300 group-hover:scale-110',
+                            domainColors[domain.slug] || 'bg-primary/15 text-primary'
+                          )}>
+                            {domainIcons[domain.slug] || <BookOpen className="h-6 w-6" />}
+                          </div>
+                          <CardTitle className="mt-4 group-hover:text-primary transition-colors">
+                            {domain.name}
+                          </CardTitle>
+                          <CardDescription>{domain.description}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                            <span className="flex items-center gap-1">
+                              <BookOpen className="h-4 w-4" />
+                              {tracks?.filter(t => t.domain?.id === domain.id).length ?? 0} tracks
+                            </span>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </button>
                   ))
                 )}
               </div>
@@ -144,7 +151,7 @@ export default function CoursesPage() {
               <div className="grid gap-3 sm:gap-4 md:grid-cols-2">
                 {tracksLoading ? (
                   [...Array(4)].map((_, i) => (
-                    <Card key={i} className="animate-pulse border-0 shadow-md">
+                    <Card key={i} className="animate-pulse ">
                       <CardContent className="p-6">
                         <div className="h-6 w-48 bg-muted rounded mb-4" />
                         <div className="h-4 w-full bg-muted rounded mb-2" />
@@ -153,8 +160,8 @@ export default function CoursesPage() {
                     </Card>
                   ))
                 ) : (
-                  tracks?.map((track) => (
-                    <Card key={track.id} className="card-hover border-0 shadow-md overflow-hidden">
+                  filteredTracks?.map((track) => (
+                    <Card key={track.id} className="card-hover overflow-hidden">
                       <CardContent className="p-6">
                         <div className="flex items-start justify-between mb-3">
                           <div>
@@ -224,10 +231,10 @@ export default function CoursesPage() {
 
           {/* Individual domain tabs - show same content but filtered */}
           {domains?.map((domain) => (
-            <TabsContent key={domain.id} value={domain.slug}>
+            <TabsContent key={domain.id} value={domain.id}>
               <div className="grid gap-4 md:grid-cols-2">
-                {tracks?.map((track) => (
-                  <Card key={track.id} className="card-hover border-0 shadow-md">
+                {filteredTracks?.map((track) => (
+                  <Card key={track.id} className="card-hover ">
                     <CardContent className="p-6">
                       <h3 className="font-semibold text-lg">{track.name}</h3>
                       <p className="text-sm text-muted-foreground mt-1">{track.description}</p>

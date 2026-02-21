@@ -140,11 +140,13 @@
   --color-card: var(--card);
 
   /* Brand Colors */
-  --color-violet: var(--violet);
-  --color-cyan: var(--cyan);
+  --color-indigo: var(--indigo);
+  --color-gold: var(--gold);
+  --color-forest: var(--forest);
   --color-emerald: var(--emerald);
   --color-amber: var(--amber);
   --color-rose: var(--rose);
+  --color-violet: var(--violet);
 
   /* Border Radius */
   --radius-sm: calc(var(--radius) - 4px);
@@ -157,93 +159,86 @@
 }
 
 :root {
-  /* Base radius */
-  --radius: 0.75rem;
+  --radius: 0.5rem;
 
-  /* ========== DRONACHARYA BRAND COLORS ========== */
-  /* Primary: Deep Indigo */
-  --indigo: oklch(0.45 0.18 280);
-  --indigo-light: oklch(0.55 0.15 280);
-  --indigo-dark: oklch(0.25 0.12 280);
+  /* ========== DRONACHARYA BRAND: SACRED VERMILION + MANUSCRIPT GOLD ========== */
+  /* Primary: Deep Vermilion — like the sacred yajna fire and Dronacharya's tilak */
+  --vermilion: oklch(0.52 0.22 28);
+  --vermilion-light: oklch(0.63 0.20 28);
+  --vermilion-dark: oklch(0.38 0.18 25);
 
-  /* Secondary: Saffron Gold */
-  --gold: oklch(0.78 0.17 70);
-  --gold-light: oklch(0.85 0.14 70);
-  --gold-dark: oklch(0.68 0.19 70);
+  /* Accent: Manuscript Gold — like ancient Sanskrit scrolls and the guru's wisdom */
+  --gold: oklch(0.78 0.18 65);
+  --gold-light: oklch(0.86 0.14 65);
+  --gold-dark: oklch(0.66 0.20 62);
 
-  /* Accent: Teal */
-  --teal: oklch(0.68 0.12 180);
-  --teal-light: oklch(0.78 0.10 180);
-  --teal-dark: oklch(0.58 0.14 180);
+  /* Forest Teal — like the gurukul forest ashram */
+  --forest: oklch(0.45 0.12 175);
 
-  /* Legacy aliases for compatibility */
-  --violet: var(--indigo);
-  --violet-light: var(--indigo-light);
-  --violet-dark: var(--indigo-dark);
+  /* Legacy bridge */
+  --indigo: var(--vermilion);
+  --indigo-light: var(--vermilion-light);
+  --indigo-dark: var(--vermilion-dark);
+  --violet: var(--vermilion);
+  --violet-light: var(--vermilion-light);
+  --violet-dark: var(--vermilion-dark);
+  --teal: var(--forest);
+  --cyan: var(--forest);
+  --amber: var(--gold);
 
-  --cyan: var(--teal);
-  --cyan-light: var(--teal-light);
-  --cyan-dark: var(--teal-dark);
+  /* Semantic */
+  --emerald: oklch(0.68 0.18 155);
+  --rose: oklch(0.62 0.22 15);
 
-  /* ========== SEMANTIC COLORS ========== */
-  --emerald: oklch(0.70 0.18 155);
-  --amber: oklch(0.80 0.16 85);
-  --rose: oklch(0.65 0.22 15);
-  --blue: oklch(0.65 0.18 250);
+  /* ========== LIGHT MODE: WARM PARCHMENT ========== */
+  /* Background like ancient parchment/manuscript paper */
+  --background: oklch(0.975 0.018 68);
+  --foreground: oklch(0.16 0.025 40);
 
-  /* ========== NEUTRAL PALETTE ========== */
-  --background: oklch(0.995 0.002 290);
-  --foreground: oklch(0.18 0.02 290);
+  --card: oklch(0.992 0.008 68);
+  --card-foreground: oklch(0.16 0.025 40);
 
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.18 0.02 290);
+  --popover: oklch(0.992 0.008 68);
+  --popover-foreground: oklch(0.16 0.025 40);
 
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.02 290);
-
-  /* Primary uses violet */
-  --primary: var(--violet);
+  --primary: var(--vermilion);
   --primary-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.96 0.008 290);
-  --secondary-foreground: oklch(0.25 0.02 290);
+  --secondary: oklch(0.94 0.012 68);
+  --secondary-foreground: oklch(0.25 0.020 45);
 
-  --muted: oklch(0.96 0.006 290);
-  --muted-foreground: oklch(0.50 0.02 290);
+  --muted: oklch(0.94 0.010 68);
+  --muted-foreground: oklch(0.50 0.018 50);
 
-  --accent: oklch(0.94 0.015 290);
-  --accent-foreground: var(--violet-dark);
+  --accent: oklch(0.92 0.016 68);
+  --accent-foreground: oklch(0.16 0.025 40);
 
   --destructive: var(--rose);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.91 0.008 290);
-  --input: oklch(0.91 0.008 290);
-  --ring: var(--violet);
+  --border: oklch(0.87 0.016 65);
+  --input: oklch(0.87 0.016 65);
+  --ring: var(--vermilion);
 
-  /* ========== CHART COLORS ========== */
-  --chart-1: var(--violet);
-  --chart-2: var(--cyan);
-  --chart-3: var(--emerald);
-  --chart-4: var(--amber);
+  /* Charts */
+  --chart-1: var(--vermilion);
+  --chart-2: var(--gold);
+  --chart-3: var(--forest);
+  --chart-4: var(--emerald);
   --chart-5: var(--rose);
 
   /* ========== SIDEBAR ========== */
-  --sidebar: oklch(0.98 0.005 290);
-  --sidebar-foreground: oklch(0.25 0.02 290);
-  --sidebar-primary: var(--violet);
+  --sidebar: oklch(0.975 0.010 68);
+  --sidebar-foreground: oklch(0.22 0.022 42);
+  --sidebar-primary: var(--vermilion);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.94 0.02 290);
-  --sidebar-accent-foreground: var(--violet);
-  --sidebar-border: oklch(0.92 0.008 290);
-  --sidebar-ring: var(--violet);
+  --sidebar-accent: oklch(0.93 0.014 68);
+  --sidebar-accent-foreground: var(--vermilion);
+  --sidebar-border: oklch(0.88 0.014 64);
+  --sidebar-ring: var(--vermilion);
 
-  /* ========== DRONACHARYA GRADIENTS ========== */
-  --gradient-brand: linear-gradient(135deg, var(--indigo) 0%, var(--indigo-light) 50%, var(--teal) 100%);
-  --gradient-gold: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-  --gradient-xp: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-  --gradient-success: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
-  --gradient-level: linear-gradient(135deg, var(--indigo-dark) 0%, var(--indigo) 50%, var(--gold) 100%);
+  /* ========== BRAND GRADIENT ========== */
+  --gradient-brand: linear-gradient(135deg, var(--vermilion-dark) 0%, var(--vermilion) 50%, var(--gold-dark) 100%);
 
   /* ========== ANIMATIONS ========== */
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
@@ -257,259 +252,276 @@
 }
 
 .dark {
-  /* ========== DARK MODE DRONACHARYA BRAND ========== */
-  /* Primary: Deep Indigo (brighter in dark mode) */
-  --indigo: oklch(0.55 0.20 280);
-  --indigo-light: oklch(0.65 0.18 280);
-  --indigo-dark: oklch(0.35 0.15 280);
+  /* Dark mode: deep charcoal like Kurukshetra night sky */
+  --vermilion: oklch(0.65 0.22 28);
+  --vermilion-light: oklch(0.74 0.20 28);
+  --vermilion-dark: oklch(0.48 0.18 25);
 
-  /* Secondary: Saffron Gold */
-  --gold: oklch(0.82 0.16 70);
-  --gold-light: oklch(0.88 0.12 70);
-  --gold-dark: oklch(0.72 0.18 70);
+  --gold: oklch(0.82 0.18 65);
+  --gold-light: oklch(0.88 0.14 65);
+  --gold-dark: oklch(0.70 0.20 62);
 
-  /* Accent: Teal */
-  --teal: oklch(0.72 0.11 180);
-  --teal-light: oklch(0.80 0.09 180);
-  --teal-dark: oklch(0.62 0.13 180);
+  --forest: oklch(0.58 0.12 175);
 
-  /* Legacy aliases */
-  --violet: var(--indigo);
-  --violet-light: var(--indigo-light);
-  --violet-dark: var(--indigo-dark);
+  --indigo: var(--vermilion);
+  --indigo-light: var(--vermilion-light);
+  --indigo-dark: var(--vermilion-dark);
+  --violet: var(--vermilion);
+  --violet-light: var(--vermilion-light);
+  --violet-dark: var(--vermilion-dark);
+  --teal: var(--forest);
+  --cyan: var(--forest);
+  --amber: var(--gold);
 
-  --cyan: var(--teal);
-  --cyan-light: var(--teal-light);
-  --cyan-dark: var(--teal-dark);
+  --emerald: oklch(0.72 0.16 155);
+  --rose: oklch(0.68 0.20 15);
 
-  /* ========== DARK MODE SEMANTIC ========== */
-  --emerald: oklch(0.75 0.15 155);
-  --amber: oklch(0.85 0.14 85);
-  --rose: oklch(0.70 0.20 15);
-  --blue: oklch(0.70 0.15 250);
+  /* Background: deep warm charcoal */
+  --background: oklch(0.12 0.016 38);
+  --foreground: oklch(0.95 0.006 70);
 
-  /* ========== DARK MODE NEUTRALS ========== */
-  --background: oklch(0.13 0.015 290);
-  --foreground: oklch(0.96 0.005 290);
+  --card: oklch(0.17 0.018 38);
+  --card-foreground: oklch(0.95 0.006 70);
 
-  --card: oklch(0.17 0.018 290);
-  --card-foreground: oklch(0.96 0.005 290);
+  --popover: oklch(0.17 0.018 38);
+  --popover-foreground: oklch(0.95 0.006 70);
 
-  --popover: oklch(0.17 0.018 290);
-  --popover-foreground: oklch(0.96 0.005 290);
-
-  --primary: var(--violet);
+  --primary: var(--vermilion);
   --primary-foreground: oklch(0.99 0 0);
 
-  --secondary: oklch(0.22 0.02 290);
-  --secondary-foreground: oklch(0.92 0.005 290);
+  --secondary: oklch(0.23 0.018 40);
+  --secondary-foreground: oklch(0.90 0.006 70);
 
-  --muted: oklch(0.22 0.015 290);
-  --muted-foreground: oklch(0.65 0.02 290);
+  --muted: oklch(0.23 0.014 40);
+  --muted-foreground: oklch(0.60 0.018 55);
 
-  --accent: oklch(0.25 0.025 290);
-  --accent-foreground: var(--violet-light);
+  --accent: oklch(0.25 0.020 40);
+  --accent-foreground: oklch(0.90 0.006 70);
 
   --destructive: var(--rose);
   --destructive-foreground: oklch(0.99 0 0);
 
-  --border: oklch(0.28 0.02 290);
-  --input: oklch(0.25 0.02 290);
-  --ring: var(--violet);
+  --border: oklch(0.30 0.018 40);
+  --input: oklch(0.28 0.018 40);
+  --ring: var(--vermilion);
 
-  /* ========== DARK SIDEBAR ========== */
-  --sidebar: oklch(0.15 0.018 290);
-  --sidebar-foreground: oklch(0.92 0.005 290);
-  --sidebar-primary: var(--violet);
+  --sidebar: oklch(0.14 0.018 38);
+  --sidebar-foreground: oklch(0.90 0.006 70);
+  --sidebar-primary: var(--vermilion);
   --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.22 0.025 290);
-  --sidebar-accent-foreground: var(--violet-light);
-  --sidebar-border: oklch(0.25 0.02 290);
-  --sidebar-ring: var(--violet);
+  --sidebar-accent: oklch(0.22 0.020 40);
+  --sidebar-accent-foreground: var(--vermilion-light);
+  --sidebar-border: oklch(0.26 0.018 40);
+  --sidebar-ring: var(--vermilion);
 
-  /* ========== DARK MODE DRONACHARYA GRADIENTS ========== */
-  --gradient-brand: linear-gradient(135deg, var(--indigo) 0%, var(--indigo-light) 50%, var(--teal) 100%);
-  --gradient-gold: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-  --gradient-xp: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
-  --gradient-success: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
-  --gradient-level: linear-gradient(135deg, var(--indigo-dark) 0%, var(--indigo) 50%, var(--gold) 100%);
+  --gradient-brand: linear-gradient(135deg, var(--vermilion-dark) 0%, var(--vermilion) 50%, var(--gold-dark) 100%);
 }
 
 /* ============================================
-   KEYFRAME ANIMATIONS
+   MAHABHARATA-INSPIRED KEYFRAME ANIMATIONS
    ============================================ */
 
-@keyframes xp-gain {
-  0% { transform: scale(1); }
-  25% { transform: scale(1.15); filter: brightness(1.2); }
-  50% { transform: scale(1.25); filter: brightness(1.4); }
-  75% { transform: scale(1.1); filter: brightness(1.1); }
-  100% { transform: scale(1); filter: brightness(1); }
+/* Page entrance — like a scripture being unveiled */
+@keyframes page-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+    filter: blur(2px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
 }
 
-@keyframes streak-fire {
-  0%, 100% {
+/* Card stagger entrance */
+@keyframes card-entrance {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
     transform: translateY(0) scale(1);
+  }
+}
+
+/* Sudarshana Chakra — eternal slow rotation */
+@keyframes chakra-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+/* Yajna Flame — sacred fire flicker */
+@keyframes flame-flicker {
+  0%, 100% {
+    transform: scaleY(1) scaleX(1) translateY(0);
     filter: brightness(1);
   }
-  25% {
-    transform: translateY(-3px) scale(1.1);
-    filter: brightness(1.2);
-  }
-  50% {
-    transform: translateY(-1px) scale(1.05);
-    filter: brightness(1.1);
-  }
-  75% {
-    transform: translateY(-2px) scale(1.08);
+  20% {
+    transform: scaleY(1.08) scaleX(0.96) translateY(-2px);
     filter: brightness(1.15);
   }
-}
-
-@keyframes achievement-unlock {
-  0% {
-    transform: scale(0) rotate(-180deg);
-    opacity: 0;
+  40% {
+    transform: scaleY(0.96) scaleX(1.04) translateY(1px);
+    filter: brightness(0.95);
   }
-  50% {
-    transform: scale(1.3) rotate(15deg);
-    opacity: 1;
+  60% {
+    transform: scaleY(1.05) scaleX(0.98) translateY(-1px);
+    filter: brightness(1.1);
   }
-  70% {
-    transform: scale(0.9) rotate(-5deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-    opacity: 1;
+  80% {
+    transform: scaleY(0.98) scaleX(1.02) translateY(0);
+    filter: brightness(1.05);
   }
 }
 
-@keyframes level-glow {
+/* Sacred Aura — pulsing golden glow like a guru's divine presence */
+@keyframes sacred-glow {
   0%, 100% {
-    box-shadow: 0 0 15px var(--violet), 0 0 30px transparent;
+    box-shadow: 0 0 0 0 transparent;
   }
   50% {
-    box-shadow: 0 0 25px var(--violet), 0 0 50px var(--cyan);
+    box-shadow: 0 0 20px 4px oklch(from var(--gold) l c h / 0.35),
+                0 0 40px 8px oklch(from var(--vermilion) l c h / 0.15);
   }
 }
 
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-6px); }
+/* Arrow streak — Dronacharya's arrow in flight */
+@keyframes arrow-streak {
+  0%   { transform: translateX(-120%) skewX(-8deg); opacity: 0; }
+  15%  { opacity: 1; }
+  85%  { opacity: 1; }
+  100% { transform: translateX(120%) skewX(-8deg); opacity: 0; }
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% center; }
+/* Manuscript shimmer — like light catching gold ink on a scroll */
+@keyframes manuscript-shimmer {
+  0%   { background-position: -200% center; }
   100% { background-position: 200% center; }
 }
 
-@keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
+/* Guru entrance — hero element float-in from above like descending wisdom */
+@keyframes guru-entrance {
+  0% {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.97);
+    filter: blur(4px);
+  }
+  60% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
 }
 
-@keyframes confetti {
-  0% { transform: translateY(0) rotate(0deg); opacity: 1; }
-  100% { transform: translateY(-100vh) rotate(720deg); opacity: 0; }
+/* Float — gentle hover for earned badges */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
 }
 
-@keyframes slide-in-left {
-  0% { transform: translateX(-100%); opacity: 0; }
-  100% { transform: translateX(0); opacity: 1; }
-}
-
-@keyframes slide-up {
-  0% { transform: translateY(20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-@keyframes bounce-in {
-  0% { transform: scale(0.3); opacity: 0; }
-  50% { transform: scale(1.1); }
-  70% { transform: scale(0.9); }
-  100% { transform: scale(1); opacity: 1; }
+/* Lotus bloom — radial expand */
+@keyframes lotus-bloom {
+  0% { transform: scale(0.6) rotate(-15deg); opacity: 0; }
+  60% { transform: scale(1.08) rotate(3deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 /* ============================================
    ANIMATION UTILITIES
    ============================================ */
 
-.animate-xp-gain {
-  animation: xp-gain 0.6s var(--ease-spring);
+.animate-page-entrance {
+  animation: page-entrance 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
-.animate-streak-fire {
-  animation: streak-fire 1.5s ease-in-out infinite;
+.animate-card-entrance > * {
+  animation: card-entrance 0.4s cubic-bezier(0.22, 1, 0.36, 1) backwards;
+}
+.animate-card-entrance > *:nth-child(1) { animation-delay: 0ms; }
+.animate-card-entrance > *:nth-child(2) { animation-delay: 60ms; }
+.animate-card-entrance > *:nth-child(3) { animation-delay: 120ms; }
+.animate-card-entrance > *:nth-child(4) { animation-delay: 180ms; }
+.animate-card-entrance > *:nth-child(5) { animation-delay: 240ms; }
+.animate-card-entrance > *:nth-child(6) { animation-delay: 300ms; }
+
+.animate-chakra {
+  animation: chakra-spin 12s linear infinite;
+  transform-origin: center;
 }
 
-.animate-achievement {
-  animation: achievement-unlock 0.8s var(--ease-spring);
+.animate-flame {
+  animation: flame-flicker 2.4s ease-in-out infinite;
+  transform-origin: bottom center;
 }
 
-.animate-level-glow {
-  animation: level-glow 2s ease-in-out infinite;
+.animate-sacred-glow {
+  animation: sacred-glow 3s ease-in-out infinite;
+}
+
+.animate-arrow-streak {
+  animation: arrow-streak 1.8s ease-in-out infinite;
+}
+
+.animate-manuscript-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    oklch(from var(--gold) l c h / 0.4) 40%,
+    oklch(from var(--gold-light) l c h / 0.6) 50%,
+    oklch(from var(--gold) l c h / 0.4) 60%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: manuscript-shimmer 3s ease-in-out infinite;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.animate-guru-entrance {
+  animation: guru-entrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-lotus-bloom {
+  animation: lotus-bloom 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
 }
 
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
-.animate-shimmer {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.4) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: shimmer 2s infinite;
-}
-
-.animate-slide-in-left {
-  animation: slide-in-left 0.4s var(--ease-out);
-}
-
-.animate-slide-up {
-  animation: slide-up 0.4s var(--ease-out);
-}
-
-.animate-bounce-in {
-  animation: bounce-in 0.5s var(--ease-spring);
-}
-
 /* ============================================
-   GRADIENT UTILITIES
+   BRAND GRADIENT UTILITIES
    ============================================ */
 
+/* Primary CTA gradient — vermilion fire to sacred gold */
 .gradient-brand {
   background: var(--gradient-brand);
 }
 
-.gradient-gold {
-  background: var(--gradient-gold);
-}
-
-.gradient-xp {
-  background: var(--gradient-xp);
-}
-
-.gradient-success {
-  background: var(--gradient-success);
-}
-
-.gradient-level {
-  background: var(--gradient-level);
-}
-
-.gradient-text {
-  background: var(--gradient-brand);
+/* Text gradient — for hero headings */
+.gradient-text-brand {
+  background: linear-gradient(135deg, var(--vermilion-dark) 0%, var(--vermilion) 40%, var(--gold) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
+/* Success gradient — emerald for completed/earned states */
+.gradient-success {
+  background: linear-gradient(135deg, var(--emerald) 0%, var(--forest) 100%);
+}
+
+/* Gold text — for accent text */
 .gradient-text-gold {
-  background: var(--gradient-gold);
+  background: linear-gradient(90deg, var(--gold-dark) 0%, var(--gold-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -656,7 +668,7 @@
 
   /* Selection color */
   ::selection {
-    background: oklch(from var(--violet) l c h / 0.3);
+    background: oklch(from var(--vermilion) l c h / 0.2);
     color: var(--foreground);
   }
 }

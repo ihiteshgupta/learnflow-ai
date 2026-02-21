@@ -30,8 +30,6 @@ export function MainLayout({ children }: MainLayoutProps) {
     <div className="min-h-screen bg-background">
       <Header
         user={defaultUser}
-        xp={0}
-        streak={0}
         onMenuClick={handleMenuToggle}
       />
       <div className="flex">
@@ -46,7 +44,7 @@ export function MainLayout({ children }: MainLayoutProps) {
         />
 
         {/* Main Content */}
-        <main id="main-content" className="flex-1 p-3 sm:p-4 md:p-6 max-w-full overflow-x-hidden">
+        <main id="main-content" className="flex-1 p-3 sm:p-4 md:p-6 max-w-full overflow-x-hidden bg-background">
           {children}
         </main>
       </div>

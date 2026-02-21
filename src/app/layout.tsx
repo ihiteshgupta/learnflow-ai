@@ -4,6 +4,7 @@ import "./globals.css";
 import { TRPCProvider } from "@/lib/trpc/provider";
 import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 import { env } from "@/lib/env";
+import { ThemeProvider } from "@/components/providers/theme-provider";
 // Validate environment variables at startup
 import "@/lib/startup";
 
@@ -67,9 +68,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}
       >
         {/* Skip to main content link for keyboard navigation */}
         <a
@@ -78,9 +79,16 @@ export default function RootLayout({
         >
           Skip to main content
         </a>
-        <TRPCProvider>
-          <AnalyticsProvider>{children}</AnalyticsProvider>
-        </TRPCProvider>
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <TRPCProvider>
+            <AnalyticsProvider>{children}</AnalyticsProvider>
+          </TRPCProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

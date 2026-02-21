@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
+import { PageHeader, StatCard } from '@/components/brand';
 import {
   Award,
   Download,
@@ -57,58 +58,16 @@ export default function CertificationsPage() {
     <MainLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-3xl font-bold tracking-tight">Certifications</h1>
-            <p className="text-muted-foreground">
-              Earn certificates and showcase your skills
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          title="Certifications"
+          description="Earn certificates and showcase your skills"
+        />
 
         {/* Stats */}
         <div className="grid gap-4 md:grid-cols-3">
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl gradient-brand">
-                  <Award className="h-6 w-6 text-white" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{earnedCount}</p>
-                  <p className="text-sm text-muted-foreground">Earned</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-amber/20">
-                  <Clock className="h-6 w-6 text-amber" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{inProgressCount}</p>
-                  <p className="text-sm text-muted-foreground">In Progress</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-6">
-              <div className="flex items-center gap-4">
-                <div className="p-3 rounded-xl bg-muted">
-                  <BookOpen className="h-6 w-6 text-muted-foreground" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{certifications.length}</p>
-                  <p className="text-sm text-muted-foreground">Available</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard label="Earned" value={earnedCount} icon={<Award className="h-5 w-5" />} />
+          <StatCard label="In Progress" value={inProgressCount} icon={<Clock className="h-5 w-5" />} />
+          <StatCard label="Available" value={certifications.length} icon={<BookOpen className="h-5 w-5" />} />
         </div>
 
         {/* Certifications List */}
@@ -120,7 +79,7 @@ export default function CertificationsPage() {
               <Card
                 key={cert.id}
                 className={cn(
-                  'border-0 shadow-md overflow-hidden',
+                  'overflow-hidden',
                   cert.status === 'locked' && 'opacity-60'
                 )}
               >
@@ -204,7 +163,7 @@ export default function CertificationsPage() {
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <span className="flex items-center gap-1">
                             <Calendar className="h-4 w-4" />
-                            {new Date(cert.completedAt!).toLocaleDateString()}
+                            {cert.completedAt ? new Date(cert.completedAt).toLocaleDateString() : '—'}
                           </span>
                           <span>ID: {cert.credentialId}</span>
                         </div>

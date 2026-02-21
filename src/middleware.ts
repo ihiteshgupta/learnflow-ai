@@ -1,6 +1,8 @@
-import { auth } from '@/lib/auth';
-import { incrementHttpRequests } from '@/lib/metrics/counters';
+import NextAuth from 'next-auth';
+import { authConfigEdge } from '@/lib/auth/config.edge';
 import { NextResponse } from 'next/server';
+
+const { auth } = NextAuth(authConfigEdge);
 
 // Routes that don't require authentication
 const publicRoutes = [
@@ -8,6 +10,7 @@ const publicRoutes = [
   '/auth/register',
   '/auth/forgot-password',
   '/auth/reset-password',
+  '/theme-preview',
   '/api/auth',
   '/api/health',
   '/api/ready',
@@ -24,9 +27,6 @@ const alwaysPublicPrefixes = [
 
 export default auth((req) => {
   const { pathname } = req.nextUrl;
-
-  // Count every request that passes through middleware
-  incrementHttpRequests(req.method);
 
   // Root route: public landing page for guests, dashboard for logged-in users
   if (pathname === '/') {

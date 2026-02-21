@@ -17,6 +17,7 @@ import {
   CheckCircle,
   Clock,
 } from 'lucide-react';
+import { PageHeader, StatCard } from '@/components/brand';
 import { cn } from '@/lib/utils';
 
 const achievementCategories = [
@@ -28,10 +29,10 @@ const achievementCategories = [
 ];
 
 const categoryColors: Record<string, string> = {
-  learning: 'from-emerald-400 to-cyan-500',
-  streak: 'from-amber-400 to-rose-500',
-  mastery: 'from-violet-400 to-purple-500',
-  special: 'from-amber-400 via-amber-500 to-rose-500',
+  learning: 'bg-forest/20 text-forest',
+  streak: 'bg-rose/20 text-rose',
+  mastery: 'bg-gold/20 text-gold',
+  special: 'gradient-brand text-primary-foreground',
 };
 
 export default function AchievementsPage() {
@@ -46,76 +47,21 @@ export default function AchievementsPage() {
     <MainLayout>
       <div className="space-y-4 sm:space-y-6">
         {/* Header */}
-        <div className="flex flex-col gap-3 sm:gap-4 md:flex-row md:items-center md:justify-between">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Achievements</h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Track your progress and unlock rewards
-            </p>
-          </div>
-        </div>
+        <PageHeader
+          title="Achievements"
+          description="Track your progress and unlock rewards"
+        />
 
         {/* Stats Cards */}
         <div className="grid gap-3 sm:gap-4 grid-cols-2 md:grid-cols-4">
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-2 sm:gap-4">
-                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl gradient-brand shrink-0">
-                  <Trophy className="h-5 w-5 sm:h-6 sm:w-6 text-white" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xl sm:text-2xl font-bold tabular-nums">{earnedCount}</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Earned</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-2 sm:gap-4">
-                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-muted shrink-0">
-                  <Lock className="h-5 w-5 sm:h-6 sm:w-6 text-muted-foreground" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xl sm:text-2xl font-bold tabular-nums">{totalCount - earnedCount}</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Locked</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-2 sm:gap-4">
-                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-amber/20 shrink-0">
-                  <Zap className="h-5 w-5 sm:h-6 sm:w-6 text-amber" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xl sm:text-2xl font-bold tabular-nums">{(profile?.totalXp || 0).toLocaleString()}</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Total XP</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
-          <Card className="border-0 shadow-md">
-            <CardContent className="p-4 sm:p-6">
-              <div className="flex items-center gap-2 sm:gap-4">
-                <div className="p-2 sm:p-3 rounded-lg sm:rounded-xl bg-rose/20 shrink-0">
-                  <Flame className="h-5 w-5 sm:h-6 sm:w-6 text-rose" />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-xl sm:text-2xl font-bold tabular-nums">{profile?.longestStreak || 0}</p>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Best Streak</p>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
+          <StatCard label="Earned" value={earnedCount} icon={<Trophy className="h-5 w-5" />} />
+          <StatCard label="Locked" value={totalCount - earnedCount} icon={<Lock className="h-5 w-5" />} />
+          <StatCard label="Total XP" value={(profile?.totalXp || 0).toLocaleString()} icon={<Zap className="h-5 w-5" />} />
+          <StatCard label="Best Streak" value={profile?.longestStreak || 0} icon={<Flame className="h-5 w-5" />} />
         </div>
 
         {/* Overall Progress */}
-        <Card className="border-0 shadow-md">
+        <Card className="overflow-hidden">
           <CardContent className="p-6">
             <div className="flex items-center justify-between mb-2">
               <span className="font-medium">Achievement Progress</span>
@@ -146,7 +92,7 @@ export default function AchievementsPage() {
             <div className="grid gap-3 sm:gap-4 md:grid-cols-2 lg:grid-cols-3">
               {isLoading ? (
                 [...Array(6)].map((_, i) => (
-                  <Card key={i} className="animate-pulse border-0 shadow-md">
+                  <Card key={i} className="animate-pulse overflow-hidden">
                     <CardContent className="p-6">
                       <div className="h-16 w-16 rounded-xl bg-muted mb-4" />
                       <div className="h-5 w-32 bg-muted rounded mb-2" />
@@ -159,7 +105,7 @@ export default function AchievementsPage() {
                   <Card
                     key={achievement.id}
                     className={cn(
-                      'card-hover border-0 shadow-md relative overflow-hidden',
+                      'card-hover overflow-hidden relative overflow-hidden',
                       !achievement.earned && 'opacity-70'
                     )}
                   >
@@ -172,15 +118,15 @@ export default function AchievementsPage() {
                         <div className={cn(
                           'relative p-3 sm:p-4 rounded-lg sm:rounded-xl shrink-0',
                           achievement.earned
-                            ? `bg-gradient-to-br ${categoryColors[achievement.category] || 'from-slate-400 to-slate-500'}`
-                            : 'bg-muted'
+                            ? categoryColors[achievement.category] || 'bg-primary/15 text-primary'
+                            : 'bg-muted text-muted-foreground'
                         )}>
                           <Trophy className={cn(
                             'h-6 w-6 sm:h-8 sm:w-8',
-                            achievement.earned ? 'text-white animate-float' : 'text-muted-foreground'
+                            achievement.earned ? 'animate-float' : 'text-muted-foreground'
                           )} />
                           {achievement.earned && (
-                            <CheckCircle className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 text-emerald bg-background rounded-full" />
+                            <CheckCircle className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 text-emerald bg-card rounded-full" />
                           )}
                         </div>
 
@@ -233,7 +179,7 @@ export default function AchievementsPage() {
           {achievementCategories.slice(1).map((cat) => (
             <TabsContent key={cat.id} value={cat.id}>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-                <Card className="border-0 shadow-md border-dashed">
+                <Card className="border-dashed">
                   <CardContent className="p-6 text-center">
                     <p className="text-muted-foreground">
                       Category filtering coming soon...
